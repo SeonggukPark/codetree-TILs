@@ -45,97 +45,72 @@ bool move_possible(int idx, int dir){
     queue<int> q;
     q.push(idx);
     attacked.insert(idx);
-
+    
     switch(dir) {
-        case 0: // 상
+        case 0:
+        case 2: // 상, 하 
+            int row;
             while(!q.empty()) {
                 cur = knights[q.front()];
                 q.pop();
+
+                if(dir == 0){
+                    if (cur.pos.first == 0) return false;
+                    row= cur.pos.first - 1;
+                }
+
+                else{
+                    if (cur.pos.first + cur.vol.first == L) return false;
+                    row = cur.pos.first + cur.vol.first;
+                }
 
                 // 맨 위일 경우
-                if (cur.pos.first == 0) return false;
                 s = cur.pos.second, e = s + cur.vol.second;
 
                 for (int i = s; i < e; i++) {
                     // 벽 있으면 이동 X
-                    if (chess[cur.pos.first - 1][i] == 2) return false;
+                    if (chess[row][i] == 2) return false;
 
                     // 맞 닿는 곳에 기사 있으면 탐색 대상으로 추가
-                    if (chess_knight[cur.pos.first - 1][i] != 0) {
-                        q.push(knights[chess_knight[cur.pos.first - 1][i]].index);
-                        attacked.insert(knights[chess_knight[cur.pos.first - 1][i]].index);
+                    if (chess_knight[row][i] != 0) {
+                        q.push(knights[chess_knight[row][i]].index);
+                        attacked.insert(knights[chess_knight[row][i]].index);
                     }
                 }
-            }
+             }
             break;
 
-        case 1: // 우
+        case 1:
+        case 3: // 좌, 우
+            int col;
             while(!q.empty()) {
                 cur = knights[q.front()];
                 q.pop();
 
-                // 맨 오른쪽일 경우
-                if (cur.pos.second + cur.vol.second == L) return false;
-                s = cur.pos.first, e = s + cur.vol.first;
-
-
-                for (int i = s; i < e; i++) {
-                    // 벽 있으면 이동 X
-                    if (chess[i][cur.pos.second + cur.vol.second] == 2) return false;
-
-                    // 맞 닿는 곳에 기사 있으면 탐색 대상으로 추가
-                    if (chess_knight[i][cur.pos.second + cur.vol.second] != 0) {
-                        q.push(knights[chess_knight[i][cur.pos.second + cur.vol.second]].index);
-                        attacked.insert(knights[chess_knight[i][cur.pos.second + cur.vol.second]].index);
-                    }
+                if(dir == 1){
+                    if (cur.pos.second + cur.vol.second == L) return false;
+                    col= cur.pos.second + cur.vol.second;
                 }
-            }
-            break;
 
-        case 2: // 하
-            while(!q.empty()) {
-                cur = knights[q.front()];
-                q.pop();
-
-
-                // 맨 아래쪽일 경우
-                if (cur.pos.first + cur.vol.first == L) return false;
-
-                s = cur.pos.second, e = s + cur.vol.second;
-
-                for (int i = s; i < e; i++) {
-                    // 벽 있으면 이동 X
-                    if (chess[cur.pos.first + cur.vol.first][i] == 2) return false;
-
-                    // 맞 닿는 곳에 기사 있으면 탐색 대상으로 추가
-                    if (chess_knight[cur.pos.first + cur.vol.first][i] != 0) {
-                        q.push(knights[chess_knight[cur.pos.first + cur.vol.first][i]].index);
-                        attacked.insert(knights[chess_knight[cur.pos.first + cur.vol.first][i]].index);
-                    }
+                else{
+                    if (cur.pos.second == 0) return false;
+                    col = cur.pos.second - 1;
                 }
-            }
-            break;
 
-        case 3: // 좌
-            while(!q.empty()) {
-                cur = knights[q.front()];
-                q.pop();
-
-                // 맨 왼쪽일 경우
-                if (cur.pos.second == 0) return false;
+                // 맨 위일 경우
                 s = cur.pos.first, e = s + cur.vol.first;
 
                 for (int i = s; i < e; i++) {
                     // 벽 있으면 이동 X
-                    if (chess[i][cur.pos.second - 1] == 2) return false;
+                    if (chess[i][col] == 2) return false;
 
                     // 맞 닿는 곳에 기사 있으면 탐색 대상으로 추가
-                    if (chess_knight[i][cur.pos.second - 1] != 0) {
-                        q.push(knights[chess_knight[i][cur.pos.second - 1]].index);
-                        attacked.insert(knights[chess_knight[i][cur.pos.second - 1]].index);
+                    if (chess_knight[i][col] != 0) {
+                        q.push(knights[chess_knight[i][col]].index);
+                        attacked.insert(knights[chess_knight[i][col]].index);
                     }
                 }
-            }
+             }
             break;
     }
 
@@ -187,7 +162,6 @@ void move_knight(int idx, int dir){
     // 지도 reset
     memset(chess_knight, 0, sizeof(chess_knight));
 
-
     // 지도 갱신
     for(auto iter : S){
         int u = knights[iter].pos.first, l = knights[iter].pos.second;
@@ -238,7 +212,6 @@ int main() {
         }
 
     }
-
 
     // 왕의 명령 (i, d) -> i번 기사에게 방향 d로 한 칸 이동
     for (int i = 0; i < Q; ++i) {
