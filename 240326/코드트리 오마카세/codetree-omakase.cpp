@@ -123,7 +123,6 @@ void run(){ // 초밥 만들기
 
 int main(){
     fastio;
-    freopen("input.txt", "r", stdin);
     init();
     input();
     run();
