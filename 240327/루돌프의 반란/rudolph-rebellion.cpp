@@ -64,7 +64,7 @@ void input(){
 
 
 void traverse(){
-    cout << "grid state: " << endl;
+    cout << endl << "grid state: " << endl;
     for (int i = 1; i <= n; ++i) {
         for (int j = 1; j <= n; ++j) {
             cout << grid[i][j] << ' ';
@@ -127,6 +127,7 @@ void rudolf_turn(){
     while(grid[row][col] != 0){
         int tar_santa = grid[row][col];
         grid[row][col] = prev;
+        // prev == 31 ? santa_r[prev] = row * c, santa_c[prev] = col * c: santa_r[prev] = row, santa_c[prev] = col;
         santa_r[prev] = row, santa_c[prev] = col;
         // cout << "santa " << tar_santa << " score " << c << " added." << endl;
 
@@ -198,7 +199,7 @@ void santa_turn() {
 
         int u_d = dr[pq.top().second], r_l = dc[pq.top().second];
         grid[santa_r[i]][santa_c[i]] = 0;
-         //cout << u_d << ' ' << r_l << ' ' << santa_r[i] << ' ' << santa_c[i] << endl;
+        // cout << u_d << ' ' << r_l << ' ' << santa_r[i] << ' ' << santa_c[i] << endl;
 
         // 빈칸 이면 그냥 이동
         if (grid[santa_r[i] + u_d][santa_c[i] + r_l] == 0) {
@@ -220,11 +221,13 @@ void santa_turn() {
                 continue;
             }
 
+            santa_r[prev] += u_d, santa_c[prev] += r_l;
+
             // 연쇄 추돌
             while (grid[row][col] != 0) {
                 int tar_santa = grid[row][col];
                 grid[row][col] = prev;
-                santa_r[prev] -= u_d, santa_c[prev] -= r_l;
+                santa_r[prev] -= (u_d * d), santa_c[prev] -= (r_l * d);
 
                 row -= u_d, col -= r_l;
 
@@ -239,7 +242,7 @@ void santa_turn() {
 
             if(!flag){
                 grid[row][col] = prev;
-                santa_r[prev] -= u_d, santa_c[prev] -= r_l;
+                santa_r[prev] -= (u_d * d), santa_c[prev] -= (r_l * d);
             }
         }
 
@@ -256,8 +259,8 @@ void turn_scoring(){
     for(int i = 1; i <= p; i++){
         cout << i << ": " << score[i] << endl;
     }
+*/
 
-    */
 
     cur_turn++;
 }
@@ -274,10 +277,10 @@ void run(){
         // cout << endl << "cur_turn: " << cur_turn << endl;
 
         rudolf_turn();
-        //traverse();
+        // traverse();
 
         santa_turn();
-        //traverse();
+        // traverse();
 
         turn_scoring();
     }
