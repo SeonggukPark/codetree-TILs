@@ -58,19 +58,8 @@ void input(){
         cin >> pn;
         cin >> santa_r[pn] >> santa_c[pn];
         grid[santa_r[pn]][santa_c[pn]] = pn;
-        // cout << "pn info: " << pn << ' ' << santa_r[pn] << ' ' << santa_c[pn] << endl;
         alive_santa.insert(pn);
     }
-
-    /*
-    for(int i = 1; i <= n; i++){
-        for(int j = 1; j <= n; j++){
-            cout << grid[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-     */
 }
 
 
@@ -92,9 +81,15 @@ void traverse(){
     cout << endl;
 }
 
+void santa_scan(){
+    for(auto i : alive_santa){
+        cout << "santa: " << i << ' ' << santa_r[i] << ' ' << santa_c[i] << endl;
+    }
+}
 
 void rudolf_turn(){
-    // cout << "cur rudolf: " << rudolf_r << ' ' <<rudolf_c << endl;
+    // santa_scan();
+
     dist = {};
     for(int i = 1; i <= p; i++){
         if(alive_santa.find(i) == alive_santa.end()) continue;
@@ -102,8 +97,6 @@ void rudolf_turn(){
     }
 
     auto hit_rudolf = dist.top();
-    // cout << "hit_rudolf: " << hit_rudolf.first << ' ' << hit_rudolf.second.first << ' ' << hit_rudolf.second.second << endl;
-
     int r_l, u_d;
 
     if(hit_rudolf.second.first > rudolf_r) u_d = 1;
@@ -114,7 +107,9 @@ void rudolf_turn(){
     else if(hit_rudolf.second.second < rudolf_c) r_l = -1;
     else r_l = 0;
 
-    // cout << "ud, rl: " << u_d << ' ' << r_l << endl;
+    // cout << "at rudolf, hit target pos: " << hit_rudolf.second.first << ' ' << hit_rudolf.second.second << endl;
+
+    // cout << "at rudolf, ud, rl: " << u_d << ' ' << r_l << endl;
 
     grid[rudolf_r][rudolf_c] = 0;
     rudolf_r += u_d, rudolf_c += r_l;
@@ -124,12 +119,17 @@ void rudolf_turn(){
     // 해당 칸에 산타 존재할 경우
     bool flag = false;
 
-    if(grid[row][col] != 0) stunned[grid[row][col]] = cur_turn + 1;
+    if(grid[row][col] != 0) {
+        score[grid[row][col]] += c;
+        stunned[grid[row][col]] = cur_turn + 1;
+    }
 
     while(grid[row][col] != 0){
         int tar_santa = grid[row][col];
         grid[row][col] = prev;
-        score[tar_santa] += c;
+        santa_r[prev] = row, santa_c[prev] = col;
+        // cout << "santa " << tar_santa << " score " << c << " added." << endl;
+
 
         // c ~ 루돌프 힘만큼
         // 1. row 이동
@@ -159,43 +159,46 @@ void rudolf_turn(){
     }
 }
 
-void interaction(){
-
-}
-
 // 상우하좌
 void santa_turn() {
     priority_queue<pii, vector<pii>, cmp2> pq;
     vector<int> runner;
     int prev;
+    int dist_cmp, dist_new;
     bool flag;
+
+   // cout << "cur_rudolf: " << rudolf_r << ' ' << rudolf_c << endl;
+
     for (int i = 1; i <= p; i++) {
         // 사망한 경우 pass
         if(alive_santa.find(i) == alive_santa.end()) continue;
         // 기절한 경우 pass
         if(cur_turn <= stunned[i]) continue;
+        // santa_scan();
 
+        // cout << "santa: " << i << endl;
         flag = false;
         pq = {};
+        dist_cmp = pow(santa_r[i] - rudolf_r, 2) + pow(santa_c[i] - rudolf_c, 2);
 
         for(int j = 0; j < 4; j++){
             int new_row = santa_r[i] + dr[j], new_col = santa_c[i] + dc[j];
+            dist_new = pow(new_row - rudolf_r, 2) + pow(new_col - rudolf_c, 2);
 
-            if (new_row < 1 || new_row > n || new_col < 1 || new_col > n) {
-                continue;
-            }
+            if(dist_new >= dist_cmp) continue;
+            if(new_row < 1 || new_row > n || new_col < 1 || new_col > n) continue;
 
             // 빈 칸이거나 루돌프 있는 칸일 경우 이동 후보
             if(grid[new_row][new_col] == 0 || grid[new_row][new_col] == 31) {
-                pq.emplace(pow(new_row - rudolf_r, 2) + pow(new_col - rudolf_c, 2), j);
+                pq.emplace(dist_new, j);
             }
-
         }
 
-        int u_d = dr[pq.top().second], r_l = dc[pq.top().second];
-        // cout << "ud, rl: " << u_d << ' ' << r_l << endl;
+        if(pq.empty()) continue;
 
+        int u_d = dr[pq.top().second], r_l = dc[pq.top().second];
         grid[santa_r[i]][santa_c[i]] = 0;
+         //cout << u_d << ' ' << r_l << ' ' << santa_r[i] << ' ' << santa_c[i] << endl;
 
         // 빈칸 이면 그냥 이동
         if (grid[santa_r[i] + u_d][santa_c[i] + r_l] == 0) {
@@ -204,9 +207,10 @@ void santa_turn() {
         }
 
         // 루돌프랑 충돌하는 경우
-        if (rudolf_r == santa_r[i] + u_d && rudolf_c == santa_c[i] + r_l) {
+        else if (rudolf_r == santa_r[i] + u_d && rudolf_c == santa_c[i] + r_l) {
             stunned[i] = cur_turn + 1;
-            score[i] += c;
+            score[i] += d;
+            // cout << "santa " << i << " score " << d << " added." << endl;
             int row = santa_r[i] + u_d * (-d + 1), col = santa_c[i] + r_l * (-d + 1);
             prev = i;
 
@@ -248,14 +252,17 @@ void turn_scoring(){
         score[i]++;
     }
 
-    /*
+/*
     for(int i = 1; i <= p; i++){
         cout << i << ": " << score[i] << endl;
     }
-*/
+
+    */
 
     cur_turn++;
 }
+
+
 
 
 void run(){
@@ -267,10 +274,10 @@ void run(){
         // cout << endl << "cur_turn: " << cur_turn << endl;
 
         rudolf_turn();
-        // traverse();
+        //traverse();
 
         santa_turn();
-        // traverse();
+        //traverse();
 
         turn_scoring();
     }
@@ -286,7 +293,6 @@ int main(){
     fastio
     init();
     input();
-
     run();
     final_score();
 
