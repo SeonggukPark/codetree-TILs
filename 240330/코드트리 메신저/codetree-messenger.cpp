@@ -1,6 +1,8 @@
 #include <iostream>
+#include <vector>
 #include <cstring>
 #define endl '\n'
+#define fastio ios::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
 using namespace std;
 constexpr size_t MAX_TREE = 100001;
 int N, Q;
@@ -29,22 +31,41 @@ void init(){
     }
 }
 
+void traverse(){
+    for(int i = 1; i <= N; i++) {
+        cout << "node[" << i << "] trans: ";
+
+        for (int j = 1; j <= trees[i].depth; j++) {
+            cout << trees[i].trans[j] << ' ';
+        }
+
+        cout << endl;
+    }
+}
+
+void depth_maker(int start, int depth){
+    if (start == -1) return;
+    trees[start].depth = depth;
+    depth_maker(trees[start].left, depth + 1);
+    depth_maker(trees[start].right, depth + 1);
+}
+
 
 void prepare() { // 1. 메신저 준비
     // N - 1 번 id & par 입력, par의 left - right 갱신
     int input;
     trees[0].id = 0;
-    trees[0].depth = 0;
 
     for (int i = 1; i <= N; ++i) {
         trees[i].id = i;
         cin >> input;
         trees[input].left == -1 ? trees[input].left = i : trees[input].right = i;
         trees[i].par = input;
-        trees[i].depth = trees[input].depth + 1;
     }
 
-    // N - 1 번 auth 입력, 부모 타고 가면서 trans 갱신
+    depth_maker(0, 0);
+
+        // N - 1 번 auth 입력, 부모 타고 가면서 trans 갱신
     for (int i = 1; i <= N; ++i) {
         cin >> input;
         trees[i].auth = input;
@@ -78,6 +99,7 @@ void set_alarm(){ // 2. 알림망 설정 on/off
 
     par = trees[input].par;
     int child = input;
+    int cnt = 1;
 
     // 해당 node trans -> tree 타고 올라가며 갱신
     if(!mode) { // 1. 알람 켜져 있던 경우 -> 올라가며 빼주기
@@ -85,12 +107,13 @@ void set_alarm(){ // 2. 알림망 설정 on/off
 
         while(par != 0){
             for(int i = 1; i <= trees[par].depth; i++){
-                trees[par].trans[i] -= trees[child].trans[i + 1];
+                trees[par].trans[i] -= trees[child].trans[i + cnt];
             }
 
-
+            cnt++;
             par = trees[par].par;
         }
+
         return;
     }
 
@@ -102,9 +125,9 @@ void set_alarm(){ // 2. 알림망 설정 on/off
 
     while(par != 0){
         for(int i = 1; i <= trees[par].depth; i++){
-            trees[par].trans[i] += trees[child].trans[i + 1];
+            trees[par].trans[i] += trees[child].trans[i + cnt];
         }
-
+        cnt++;
         par = trees[par].par;
     }
 }
@@ -136,7 +159,6 @@ void change_auth(){ // 3. 권한 세기 변경
         auth--;
         par = trees[par].par;
     }
-
 }
 
 void exchange_par(){ // 4. 부모 채팅방 교환
@@ -170,6 +192,7 @@ void exchange_par(){ // 4. 부모 채팅방 교환
             par = trees[par].par;
         }
     }
+
 
     // 2. 두 채팅방 par 교환
     int tmp = trees[input1].par;
