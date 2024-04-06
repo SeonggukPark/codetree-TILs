@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstring>
+#include <set>
 #define endl '\n'
 #define pii pair<int, int>
 #define fastio ios_base::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
@@ -24,117 +25,38 @@ void input(){
     }
 }
 
-void pat_1(){
-    pii pat[2][4] = {{{0, 0}, {0, 1}, {0, 2}, {0, 3}}, {{0, 0}, {1, 0}, {2, 0}, {3, 0}}};
-    pii bound[2] = {{n, m - 3}, {n - 3, m}};
-
-    for(int k = 0; k < 2; k++) {
-        auto b = bound[k];
-        for (int i = 0; i < b.first; ++i) {
-            for (int j = 0; j < b.second; ++j) {
-                int tmp = 0;
-
-                for (auto &p: pat[k]) {
-                    tmp += grid[i + p.first][j + p.second];
-                }
-
-                if (tmp > max_sum) max_sum = tmp;
-            }
-        }
+void dfs(int depth, set<pii> s, int cnt){
+    if(depth == 4){
+        if(cnt > max_sum) max_sum = cnt;
+        return;
     }
-}
 
-void pat_2(){
-    pii pat[4] = {{0, 0}, {0, 1}, {1, 0}, {1, 1}};
-    pii bound = {n - 1, m - 1};
+    int dx[4] = {-1, 1, 0, 0};
+    int dy[4] = {0, 0, -1, 1};
 
-    for (int i = 0; i < bound.first; ++i) {
-        for (int j = 0; j < bound.second; ++j) {
-            int tmp = 0;
+    for(auto pos : s){
+        for(int i = 0; i < 4; i++){
+            int nx = pos.first + dx[i], ny = pos.second + dy[i];
 
-            for (auto &p: pat) {
-                tmp += grid[i + p.first][j + p.second];
-            }
-
-            if (tmp > max_sum) max_sum = tmp;
-        }
-    }
-}
-
-void pat_3(){
-    pii pat[8][4] = {{{0, 0}, {1, 0}, {2, 0}, {2, 1}}, {{1, 0}, {1, 1}, {1, 2}, {0, 2}},
-                     {{0, 0}, {0, 1}, {1, 1}, {2, 1}}, {{0, 0}, {1, 0}, {0, 1}, {0, 2}},
-                     {{2, 0}, {0, 1}, {1, 1}, {2, 1}}, {{0, 0}, {0, 1}, {1, 2}, {0, 2}},
-                     {{0, 0}, {0, 1}, {1, 0}, {2, 0}}, {{0, 0}, {1, 0}, {1, 1}, {1, 2}}};
-
-    pii bound[8] = {{n - 2, m - 1}, {n - 1, m - 2}, {n - 2, m - 1}, {n - 1, m - 2},
-                    {n - 2, m - 1}, {n - 1, m - 2}, {n - 2, m - 1}, {n - 1, m - 2}};
-
-    for(int k = 0; k < 8; k++) {
-        auto b = bound[k];
-        for (int i = 0; i < b.first; ++i) {
-            for (int j = 0; j < b.second; ++j) {
-                int tmp = 0;
-
-                for (auto &p: pat[k]) {
-                    tmp += grid[i + p.first][j + p.second];
-                }
-
-                if (tmp > max_sum) max_sum = tmp;
-            }
-        }
-    }
-}
-
-void pat_4(){
-    pii pat[4][4] = {{{0, 0}, {1, 0}, {1, 1}, {2, 1}}, {{1, 0}, {0, 1}, {1, 1}, {0, 2}},
-                     {{1, 0}, {2, 0}, {1, 1}, {0, 1}}, {{0, 0}, {0, 1}, {1, 1}, {1, 2}}};
-    pii bound[4] = {{n - 2, m - 1}, {n - 1, m - 2}, {n - 2, m - 1}, {n - 1, m - 2}};
-
-    for(int k = 0; k < 4; k++) {
-        auto b = bound[k];
-        for (int i = 0; i < b.first; ++i) {
-            for (int j = 0; j < b.second; ++j) {
-                int tmp = 0;
-
-                for (auto &p: pat[k]) {
-                    tmp += grid[i + p.first][j + p.second];
-                }
-
-                if (tmp > max_sum) max_sum = tmp;
-            }
-        }
-    }
-}
-
-void pat_5(){
-    pii pat[4][4] = {{{0, 0}, {1, 0}, {2, 0}, {1, 1}}, {{1, 0}, {0, 1}, {1, 1}, {1, 2}},
-                     {{1, 0}, {0, 1}, {1, 1}, {2, 1}}, {{0, 0}, {1, 1}, {0, 1}, {0, 2}}};
-
-    pii bound[4] = {{n - 2, m - 1}, {n - 1, m - 2}, {n - 2, m - 1}, {n - 1, m - 2}};
-
-    for(int k = 0; k < 4; k++) {
-        auto b = bound[k];
-        for (int i = 0; i < b.first; ++i) {
-            for (int j = 0; j < b.second; ++j) {
-                int tmp = 0;
-
-                for (auto &p: pat[k]) {
-                    tmp += grid[i + p.first][j + p.second];
-                }
-
-                if (tmp > max_sum) max_sum = tmp;
+            if(0 <= nx && nx < n && 0 <= ny && ny < n){
+               if(s.find({nx, ny}) == s.end()){
+                   s.insert({nx, ny});
+                   dfs(depth + 1, s, cnt + grid[nx][ny]);
+                   s.erase({nx, ny});
+               }
             }
         }
     }
 }
 
 void run(){
-    pat_1();
-    pat_2();
-    pat_3();
-    pat_4();
-    pat_5();
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            set<pii> s;
+            s.insert({i, j});
+            dfs(1, s, grid[i][j]);
+        }
+    }
 }
 
 
