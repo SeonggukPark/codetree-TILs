@@ -13,14 +13,15 @@ int dy[4] = {0, 0, -1, 1};
 
 void init(){
     memset(grid, 0, sizeof(grid));
+    memset(visited, 0, sizeof(visited));
     max_sum = 0;
 }
 
 void input(){
     cin >> n >> m;
 
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < m; ++j) {
+    for (int i = 1; i <= n; ++i) {
+        for (int j = 1; j <= m; ++j) {
             cin >> grid[i][j];
         }
     }
@@ -35,7 +36,7 @@ void dfs(int x, int y, int depth, int add) {
     for (int i = 0; i < 4; i++) {
         int nx = x + dx[i], ny = y + dy[i];
 
-        if (0 <= nx && nx < n && 0 <= ny && ny < m) {
+        if (1 <= nx && nx <= n && 1 <= ny && ny <= m) {
             if(visited[nx][ny]) continue;
             visited[nx][ny] = true;
             dfs(nx, ny, depth + 1, add + grid[nx][ny]);
@@ -46,8 +47,8 @@ void dfs(int x, int y, int depth, int add) {
 
 
 void run(){
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < m; ++j) {
+    for (int i = 1; i <= n; ++i) {
+        for (int j = 1; j <= m; ++j) {
             visited[i][j] = true;
             dfs(i, j, 1, grid[i][j]);
             visited[i][j] = false;
