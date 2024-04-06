@@ -1,14 +1,15 @@
 #include <iostream>
 #include <cstring>
-#include <set>
 #define endl '\n'
-#define pii pair<int, int>
 #define fastio ios_base::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
-
 using namespace std;
-constexpr size_t MAX_N = 200;
+constexpr size_t MAX_N = 201;
 int n, m, max_sum;
 int grid[MAX_N][MAX_N];
+bool visited[MAX_N][MAX_N];
+int dx[4] = {-1, 1, 0, 0};
+int dy[4] = {0, 0, -1, 1};
+
 
 void init(){
     memset(grid, 0, sizeof(grid));
@@ -25,36 +26,45 @@ void input(){
     }
 }
 
-void dfs(int depth, set<pii> s, int cnt){
-    if(depth == 4){
-        if(cnt > max_sum) max_sum = cnt;
+void dfs(int x, int y, int depth, int add) {
+    if (depth == 4) {
+        if (add > max_sum) max_sum = add;
         return;
     }
 
-    int dx[4] = {-1, 1, 0, 0};
-    int dy[4] = {0, 0, -1, 1};
+    for (int i = 0; i < 4; i++) {
+        int nx = x + dx[i], ny = y + dy[i];
 
-    for(auto pos : s){
-        for(int i = 0; i < 4; i++){
-            int nx = pos.first + dx[i], ny = pos.second + dy[i];
-
-            if(0 <= nx && nx < n && 0 <= ny && ny < m){
-                if(s.find({nx, ny}) == s.end()){
-                    s.insert({nx, ny});
-                    dfs(depth + 1, s, cnt + grid[nx][ny]);
-                    s.erase({nx, ny});
-                }
-            }
+        if (0 <= nx && nx < n && 0 <= ny && ny < m) {
+            if(visited[nx][ny]) continue;
+            visited[nx][ny] = true;
+            dfs(nx, ny, depth + 1, add + grid[nx][ny]);
+            visited[nx][ny] = false;
         }
     }
 }
 
+
 void run(){
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < m; ++j) {
-            set<pii> s;
-            s.insert({i, j});
-            dfs(1, s, grid[i][j]);
+            visited[i][j] = true;
+            dfs(i, j, 1, grid[i][j]);
+            visited[i][j] = false;
+        }
+    }
+
+    for (int i = 1; i < n; ++i) {
+        for (int j = 1; j < m; ++j) {
+            int t = grid[i][j];
+            int mini = 1001;
+
+            for (int k = 0; k < 4; k++) {
+                if(mini > grid[i + dx[k]][j + dy[k]]) mini = grid[i + dx[k]][j + dy[k]];
+                t += grid[i + dx[k]][j + dy[k]];
+            }
+
+            if(max_sum < t - mini) max_sum = t - mini;
         }
     }
 }
