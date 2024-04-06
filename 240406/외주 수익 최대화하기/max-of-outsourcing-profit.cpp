@@ -13,6 +13,11 @@ int main() {
     for(int i = 0; i < n; i++){
       cin >> t >> p;
       arr[i + t] = max(arr[i + t], arr[i] + p);
+
+      for(int j = i; j <= n; j++){
+          arr[j] = max(arr[i], arr[j]);
+      }
+
     }
 
     cout << arr[n];
