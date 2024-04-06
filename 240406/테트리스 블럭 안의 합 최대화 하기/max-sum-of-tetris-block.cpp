@@ -38,12 +38,12 @@ void dfs(int depth, set<pii> s, int cnt){
         for(int i = 0; i < 4; i++){
             int nx = pos.first + dx[i], ny = pos.second + dy[i];
 
-            if(0 <= nx && nx < n && 0 <= ny && ny < n){
-               if(s.find({nx, ny}) == s.end()){
-                   s.insert({nx, ny});
-                   dfs(depth + 1, s, cnt + grid[nx][ny]);
-                   s.erase({nx, ny});
-               }
+            if(0 <= nx && nx < n && 0 <= ny && ny < m){
+                if(s.find({nx, ny}) == s.end()){
+                    s.insert({nx, ny});
+                    dfs(depth + 1, s, cnt + grid[nx][ny]);
+                    s.erase({nx, ny});
+                }
             }
         }
     }
