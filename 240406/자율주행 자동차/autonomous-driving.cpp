@@ -32,6 +32,8 @@ void input(){
 void run(int x, int y, int dir){
     while(true) {
         for (int i = 0; i < 4; ++i) {
+            cout << "x, y, dir, i: " << x << ' ' << y << ' ' << dir << ' ' << i << endl;
+
             int nx = x + dx[(dir + 3 - i) % 4], ny = y + dy[(dir + 3 - i) % 4];
 
             if (nx < 0 || nx >= n || ny < 0 || ny >= n) continue;
@@ -44,6 +46,10 @@ void run(int x, int y, int dir){
 
         if(map[x - dx[dir]][y - dy[dir]]) break;
         x -= dx[dir], y -= dy[dir];
+        if(!visited[x][y]){
+            visited[x][y] = true;
+            cnt++;
+        }
     }
 }
 
