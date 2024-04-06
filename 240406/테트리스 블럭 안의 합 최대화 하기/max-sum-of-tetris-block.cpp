@@ -5,7 +5,7 @@
 #define fastio ios_base::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
 
 using namespace std;
-constexpr size_t MAX_N = 20;
+constexpr size_t MAX_N = 200;
 int n, m, max_sum;
 int grid[MAX_N][MAX_N];
 
