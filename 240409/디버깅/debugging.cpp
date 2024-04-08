@@ -12,26 +12,13 @@ void init(){
     rst = 4;
 }
 
-void traverse(){
-    for(int i = 0; i < h; i++){
-        for (int j = 0; j < n - 1; ++j) {
-            cout << grid[i][j] << ' ';
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
-
-
 void input(){
     int x, y;
     cin >> n >> m >> h;
 
-
     while(m--){
         cin >> x >> y;
         grid[x - 1][y - 1] = 1;
-        // cout << "x, y: " << x-1 <<' ' << y-1 << endl;
     }
 }
 
@@ -50,23 +37,16 @@ bool is_possible() {
     return true;
 }
 
-
 void dfs(int x, int y, int depth){
     if(depth > 3) return;
 
     for(int i = x; i < h; i++){
         for (int j = y; j < n - 1; ++j) {
             if(grid[i][j] == 0) {
-
                 // 양 옆 확인
-                if(j != 0 && grid[i][j - 1] == 1){
-                    continue;
-                }
-
-                if(j != n - 2 && grid[i][j + 1] == 1){
-                    continue;
-                }
-
+                if(j != 0 && grid[i][j - 1] == 1) continue;
+                if(j != n - 2 && grid[i][j + 1] == 1) continue;
+            
                 grid[i][j] = 1;
 
                 if(is_possible()) rst = min(rst, depth);
@@ -76,8 +56,6 @@ void dfs(int x, int y, int depth){
             }
         }
     }
-
-
 }
 
 void run(){
@@ -86,18 +64,12 @@ void run(){
         rst = 0;
         return;
     }
-
     dfs(0, 0, 1);
 }
 
-
 int main() {
     init();
-    // traverse();
-
     input();
-
-    // traverse();
     run();
 
     rst == 4 ? cout << -1 : cout << rst;
