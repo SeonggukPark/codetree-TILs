@@ -15,7 +15,7 @@ void init(){
 void traverse(){
     for(int i = 0; i < h; i++){
         for (int j = 0; j < n - 1; ++j) {
-            cout << i << ' ' << j << ' ' << grid[i][j] << ' ';
+            cout << grid[i][j] << ' ';
         }
         cout << endl;
     }
@@ -35,60 +35,29 @@ void input(){
     }
 }
 
-
-bool is_possible(){
-    stack<vector<int> > s;
-    vector<int> v;
-    bool flag, null_flag;
-
-    for(int i = 0; i < h; i++){
-        // cout << "row, size, top: " << i << ' ' << s.size() << endl;
-        v.clear();
-        null_flag = true;
-        flag = false;
-
-        for(int j = 0; j < n - 1; j++){
-            v.push_back(grid[i][j]);
-            if(grid[i][j] != 0) null_flag = false;
-        }
-
-        if(null_flag) continue;
-
-        if(s.empty()) {
-            s.push(v);
-            continue;
-        }
-
-        vector<int> tmp = s.top();
-
-
-        for(int j = 0; j < n - 1; j++){
-            // cout << tmp[j] << ' ' << v[j] << endl;
-            if(tmp[j] != v[j]) {
-                flag = true;
-                break;
+bool is_possible() {
+    for (int i = 0; i < n - 1; i++) {
+        int start = i;
+        for (int j = 0; j < h; j++) {
+            if (grid[j][start] == 1) {
+                start += 1;
+            } else if (start - 1 >= 0 && grid[j][start - 1] == 1) {
+                start -= 1;
             }
         }
-
-        if(!flag){
-            s.pop();
-            continue;
-        }
-
-        s.push(v);
+        if (start != i) return false;
     }
-
-    if(s.empty()) return true;
-    return false;
+    return true;
 }
 
-void bfs(int x, int y, int depth){
+
+void dfs(int x, int y, int depth){
     if(depth > 3) return;
 
     for(int i = x; i < h; i++){
         for (int j = y; j < n - 1; ++j) {
             if(grid[i][j] == 0) {
-                
+
                 // 양 옆 확인
                 if(j != 0 && grid[i][j - 1] == 1){
                     continue;
@@ -97,12 +66,12 @@ void bfs(int x, int y, int depth){
                 if(j != n - 2 && grid[i][j + 1] == 1){
                     continue;
                 }
-                
+
                 grid[i][j] = 1;
 
                 if(is_possible()) rst = min(rst, depth);
 
-                bfs(i, j, depth + 1);
+                dfs(i, j, depth + 1);
                 grid[i][j] = 0;
             }
         }
@@ -118,7 +87,7 @@ void run(){
         return;
     }
 
-    bfs(0, 0, 1);
+    dfs(0, 0, 1);
 }
 
 
