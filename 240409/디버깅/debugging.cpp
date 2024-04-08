@@ -3,7 +3,7 @@
 #include <vector>
 #include <cstring>
 using namespace std;
-constexpr size_t MAX_N = 11, MAX_H = 31;
+constexpr size_t MAX_N = 10, MAX_H = 30;
 int n, m, h, rst;
 int grid[MAX_H][MAX_N];
 
@@ -87,6 +87,15 @@ void bfs(int x, int y, int depth){
 
     for(int i = x; i < h; i++){
         for (int j = y; j < n - 1; ++j) {
+            // 양 옆 확인
+            if(j != 0 && grid[i][j - 1] == 1){
+                continue;
+            }
+
+            if(j != n - 2 && grid[i][j + 1] == 1){
+                continue;
+            }
+                
 
             if(grid[i][j] == 0) {
                 grid[i][j] = 1;
