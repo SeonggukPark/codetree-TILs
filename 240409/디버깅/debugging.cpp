@@ -5,32 +5,36 @@
 using namespace std;
 constexpr size_t MAX_N = 10, MAX_H = 30;
 int n, m, h, rst;
-int grid[MAX_N][MAX_H];
+int grid[MAX_H][MAX_N];
 
 void init(){
     memset(grid, 0, sizeof(grid));
     rst = 4;
 }
 
-void input(){
-    int x, y;
-    cin >> n >> m >> h;
-
-    while(m--){
-        cin >> x >> y;
-        grid[x - 1][y - 1] = 1;
-    }
-}
-
 void traverse(){
     for(int i = 0; i < h; i++){
         for (int j = 0; j < n - 1; ++j) {
-            cout << grid[i][j] << ' ';
+            cout << i << ' ' << j << ' ' << grid[i][j] << ' ';
         }
         cout << endl;
     }
     cout << endl;
 }
+
+
+void input(){
+    int x, y;
+    cin >> n >> m >> h;
+
+
+    while(m--){
+        cin >> x >> y;
+        grid[x - 1][y - 1] = 1;
+        // cout << "x, y: " << x-1 <<' ' << y-1 << endl;
+    }
+}
+
 
 bool is_possible(){
     stack<vector<int> > s;
@@ -38,13 +42,14 @@ bool is_possible(){
     bool flag, null_flag;
 
     for(int i = 0; i < h; i++){
+        // cout << "row, size, top: " << i << ' ' << s.size() << endl;
         v.clear();
         null_flag = true;
         flag = false;
 
-        for(int j : grid[i]){
-            v.push_back(j);
-            if(j != 0) null_flag = false;
+        for(int j = 0; j < n - 1; j++){
+            v.push_back(grid[i][j]);
+            if(grid[i][j] != 0) null_flag = false;
         }
 
         if(null_flag) continue;
@@ -56,7 +61,9 @@ bool is_possible(){
 
         vector<int> tmp = s.top();
 
+
         for(int j = 0; j < n - 1; j++){
+            // cout << tmp[j] << ' ' << v[j] << endl;
             if(tmp[j] != v[j]) {
                 flag = true;
                 break;
@@ -108,7 +115,11 @@ void run(){
 
 int main() {
     init();
+    // traverse();
+
     input();
+
+    // traverse();
     run();
 
     rst == 4 ? cout << -1 : cout << rst;
