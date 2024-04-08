@@ -91,9 +91,17 @@ void bfs(int x, int y, int depth){
             }
         }
     }
+
+
 }
 
 void run(){
+    // 초기 상태가 이미 해결된 경우
+    if(is_possible()){
+        rst = 0;
+        return;
+    }
+
     bfs(0, 0, 1);
 }
 
@@ -102,7 +110,7 @@ int main() {
     init();
     input();
     run();
-    
+
     rst == 4 ? cout << -1 : cout << rst;
     return 0;
 }
