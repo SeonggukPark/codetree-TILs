@@ -194,7 +194,6 @@ void run() {
 
 
 int main() {
-    freopen("input.txt", "r", stdin);
     init();
     input();
     run();
