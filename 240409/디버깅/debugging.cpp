@@ -3,7 +3,7 @@
 #include <vector>
 #include <cstring>
 using namespace std;
-constexpr size_t MAX_N = 10, MAX_H = 30;
+constexpr size_t MAX_N = 11, MAX_H = 31;
 int n, m, h, rst;
 int grid[MAX_H][MAX_N];
 
