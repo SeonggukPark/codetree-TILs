@@ -109,7 +109,7 @@ void calc_dist(pii target){
 void fill_pq(){
     pq = {};
     int lev = robot.lev;
-    if(lev > 7) lev = 6;
+    if(lev > 7) lev = 7;
 
     for(int i = 1; i < lev; i++){
         for(auto k : monster[i]){
