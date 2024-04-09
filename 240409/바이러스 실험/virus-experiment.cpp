@@ -17,13 +17,6 @@ struct virus{
     bool alive;
 };
 
-/*
-struct cmp{
-    bool operator()(const virus & a, const virus & b){
-        return a.age < b.age;
-    }
-};*/
-
 bool cmp(const virus & a, const virus & b){
     return a.age < b.age;
 };
@@ -55,23 +48,6 @@ void input(){
     }
 }
 
-void scan_grid(){
-    cout << "grid scan: " << endl;
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            cout << grid[i][j] << ' ';
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
-
-void traverse_v(){
-    for(auto i : v){
-        cout << i.x << ' ' << i.y << ' ' << i.age << endl;
-    }
-    cout << endl;
-}
 
 void consume_nut(){
     for(auto & i : v){
@@ -132,7 +108,6 @@ void run(){
     while(k-- && !v.empty()){
         // 0. virus 나이 순 정렬
         sort(v.begin(), v.end(), cmp);
-        //traverse_v();
 
         // 1. 양분 섭취
         consume_nut();
@@ -145,11 +120,6 @@ void run(){
 
         // 4. grid 양분 추가
         grid_increase();
-
-
-        //cout << k << endl;
-        //traverse_v();
-        //scan_grid();
     }
 
     cout << v.size();
