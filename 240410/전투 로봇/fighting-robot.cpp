@@ -103,12 +103,13 @@ void calc_dist(pii target){
 
     // cout << s.first << ' ' << s.second << ' ' << d.first << ' ' << d.second << endl;
     bfs();
-    
+
 }
 
 void fill_pq(){
     pq = {};
     int lev = robot.lev;
+    if(lev > 7) lev = 6;
 
     for(int i = 1; i < lev; i++){
         for(auto k : monster[i]){
