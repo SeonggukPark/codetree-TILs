@@ -2,6 +2,7 @@
 #include <cstring>
 #include <queue>
 #define pii pair<int, int>
+#define fastio ios_base::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
 using namespace std;
 
 constexpr size_t MAX_N = 20;
@@ -146,6 +147,7 @@ void run(){
 }
 
 int main() {
+    fastio
     init();
     input();
     run();
