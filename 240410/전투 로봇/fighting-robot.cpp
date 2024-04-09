@@ -61,33 +61,49 @@ void input(){
 
 int min_dist;
 bool visited[MAX_N][MAX_N];
-pii s, d;
+pii d;
 
-void bfs(int x, int y, int depth){
-    if(x == d.first && y == d.second){
-        min_dist = min(min_dist, depth);
-        return;
-    }
+struct pos{
+    int x, y, dep;
+};
 
-    for(int i = 0; i < 4; i++){
-        int nx = x + dx[i], ny = y + dy[i];
+queue<pos> q;
 
-        if(nx < 0 || ny < 0 || nx >= n || ny >= n || visited[nx][ny]) continue;
-        if(grid[nx][ny] > robot.lev) continue;
+void bfs(){
+    q = {};
+    q.push({robot.x, robot.y, 0});
+    visited[robot.x][robot.y] = true;
 
-        visited[nx][ny] = true;
-        bfs(nx, ny, depth + 1);
-        visited[nx][ny] = false;
+    while(!q.empty()){
+        auto cur = q.front();
+        q.pop();
+
+        if(d.first == cur.x && d.second == cur.y){
+            min_dist = cur.dep;
+            break;
+        }
+
+        for(int i = 0; i < 4; i++){
+            int nx = cur.x + dx[i], ny = cur.y + dy[i];
+
+
+            if(nx < 0 || ny < 0 || nx >= n || ny >= n || visited[nx][ny]) continue;
+            if(grid[nx][ny] > robot.lev) continue;
+
+            visited[nx][ny] = true;
+            q.push({nx, ny, cur.dep + 1});
+        }
     }
 }
 
 void calc_dist(pii target){
     memset(visited, 0, sizeof(visited));
-    min_dist = n * n + 1;
-    s = {robot.x, robot.y}, d = target;
+    min_dist = -1;
+    d = target;
 
     // cout << s.first << ' ' << s.second << ' ' << d.first << ' ' << d.second << endl;
-    bfs(s.first, s.second, 0);
+    bfs();
+    
 }
 
 void fill_pq(){
@@ -103,8 +119,9 @@ void fill_pq(){
                 calc_dist(k);
 
                 // 길 없는 경우
-                if(min_dist == n * n + 1) continue;
+                if(min_dist == -1) continue;
 
+                // cout << min_dist << endl;
                 pq.push({k.first, k.second, min_dist});
             }
         }
@@ -114,7 +131,6 @@ void fill_pq(){
 void run(){
     while(true){
         fill_pq();
-        // cout << pq.size() << endl;
 
         // 더 이상 공격할 대상 없으면 종료
         if(pq.empty()) break;
@@ -135,10 +151,8 @@ void run(){
 }
 
 int main() {
-    // freopen("input.txt", "r", stdin);
     init();
     input();
     run();
-
     return 0;
 }
