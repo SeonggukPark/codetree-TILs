@@ -17,11 +17,18 @@ struct virus{
     bool alive;
 };
 
+/*
+struct cmp{
+    bool operator()(const virus & a, const virus & b){
+        return a.age < b.age;
+    }
+};*/
+
 bool cmp(const virus & a, const virus & b){
     return a.age < b.age;
 };
 
-vector<virus> v;
+vector<virus> v, virus_v;
 
 void init(){
     memset(grid, 0, sizeof(grid));
@@ -48,6 +55,23 @@ void input(){
     }
 }
 
+void scan_grid(){
+    cout << "grid scan: " << endl;
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            cout << grid[i][j] << ' ';
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
+void traverse_v(){
+    for(auto i : v){
+        cout << i.x << ' ' << i.y << ' ' << i.age << endl;
+    }
+    cout << endl;
+}
 
 void consume_nut(){
     for(auto & i : v){
@@ -78,6 +102,7 @@ void virus_ground(){
 }
 
 void virus_increase(){
+    virus_v.clear();
     for(auto & i : v){
         // 나이 5의 배수 아니면 지나가기
         if(i.age % 5 != 0) continue;
@@ -91,8 +116,12 @@ void virus_increase(){
 
             virus tmp{};
             tmp.x = nx, tmp.y = ny, tmp.age = 1, tmp.alive = true;
-            v.push_back(tmp);
+            virus_v.push_back(tmp);
         }
+    }
+
+    for(auto & i : virus_v){
+        v.push_back(i);
     }
 }
 
@@ -108,6 +137,7 @@ void run(){
     while(k-- && !v.empty()){
         // 0. virus 나이 순 정렬
         sort(v.begin(), v.end(), cmp);
+        //traverse_v();
 
         // 1. 양분 섭취
         consume_nut();
@@ -120,6 +150,11 @@ void run(){
 
         // 4. grid 양분 추가
         grid_increase();
+
+
+        // cout << k << endl;
+        //traverse_v();
+        // scan_grid();
     }
 
     cout << v.size();
