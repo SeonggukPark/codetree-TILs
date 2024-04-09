@@ -100,10 +100,7 @@ void calc_dist(pii target){
     memset(visited, 0, sizeof(visited));
     min_dist = -1;
     d = target;
-
-    // cout << s.first << ' ' << s.second << ' ' << d.first << ' ' << d.second << endl;
     bfs();
-
 }
 
 void fill_pq(){
@@ -113,8 +110,6 @@ void fill_pq(){
 
     for(int i = 1; i < lev; i++){
         for(auto k : monster[i]){
-            // cout << k.first << ' ' << k.second << endl;
-
             if(grid[k.first][k.second] != 0){
                 // 거리 계산 ~ dist
                 calc_dist(k);
@@ -122,7 +117,6 @@ void fill_pq(){
                 // 길 없는 경우
                 if(min_dist == -1) continue;
 
-                // cout << min_dist << endl;
                 pq.push({k.first, k.second, min_dist});
             }
         }
@@ -152,6 +146,7 @@ void run(){
 }
 
 int main() {
+    freopen("input.txt", "r", stdin);
     init();
     input();
     run();
