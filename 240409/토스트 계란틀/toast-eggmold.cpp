@@ -78,27 +78,6 @@ bool is_possible(){
     return true;
 }
 
-
-void traverse(){
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            cout << grid[i][j] << ' ';
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
-
-void traverse_pos(){
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            cout << visited[i][j] << ' ';
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
-
 void run(){
     rst = 0;
     while(!is_possible()){
@@ -119,15 +98,13 @@ void run(){
         }
 
         memset(visited, false, sizeof(visited));
-        // traverse();
-        // traverse_pos();
-        // cout << is_possible() << ' ' << n << ' ' << l << ' ' << r << endl;
     }
 }
 
 
 int main() {
     fastio
+    freopen("input.txt", "r", stdin);
     init();
     input();
     run();
