@@ -79,28 +79,6 @@ bool is_possible(){
 }
 
 
-void run(){
-    rst = 0;
-    while(!is_possible()){
-        rst++;
-
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < n; ++j) {
-                v.clear();
-                auto data = dfs(i, j);
-                int new_data = data.first / data.second;
-
-                if(v.empty()) continue;
-                for(auto k : v){
-                    grid[k.first][k.second] = new_data;
-                }
-            }
-        }
-
-        memset(visited, false, sizeof(visited));
-    }
-}
-
 void traverse(){
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
@@ -120,6 +98,33 @@ void traverse_pos(){
     }
     cout << endl;
 }
+
+void run(){
+    rst = 0;
+    while(!is_possible()){
+        rst++;
+
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if(visited[i][j]) continue;
+                v.clear();
+                auto data = dfs(i, j);
+                int new_data = data.first / data.second;
+
+                if(v.empty()) continue;
+                for(auto k : v){
+                    grid[k.first][k.second] = new_data;
+                }
+            }
+        }
+
+        memset(visited, false, sizeof(visited));
+        // traverse();
+        // traverse_pos();
+        // cout << is_possible() << ' ' << n << ' ' << l << ' ' << r << endl;
+    }
+}
+
 
 int main() {
     fastio
