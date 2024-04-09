@@ -104,7 +104,6 @@ void run(){
 
 int main() {
     fastio
-    freopen("input.txt", "r", stdin);
     init();
     input();
     run();
