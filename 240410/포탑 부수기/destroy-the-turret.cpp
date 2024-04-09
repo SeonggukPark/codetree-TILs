@@ -6,7 +6,7 @@
 #define pii pair<int, int>
 using namespace std;
 constexpr size_t MAX_SIZE = 10;
-int n, m, k, tower_cnt;
+int n, m, k, tower_cnt, time_cnt;
 int grid[MAX_SIZE][MAX_SIZE];
 int grid_time[MAX_SIZE][MAX_SIZE];
 bool is_connect[MAX_SIZE][MAX_SIZE];
@@ -52,7 +52,7 @@ void init(){
     memset(grid, 0, sizeof(grid));
     memset(grid_time, 0, sizeof(grid_time));
     memset(is_connect, false, sizeof(is_connect));
-    tower_cnt = 0;
+    tower_cnt = 0, time_cnt = 0;
 }
 
 void input(){
@@ -76,6 +76,9 @@ void traverse(){
 }
 
 void phase_1(){ // 1. 공격자, 피해자 선정
+    pq_a = {};
+    pq_d = {};
+
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < m; ++j) {
             if(grid[i][j] != 0) {
@@ -89,6 +92,8 @@ void phase_1(){ // 1. 공격자, 피해자 선정
 
     // 공격자 공격력 올려주기
     grid[at.x][at.y] += (n + m);
+
+    grid_time[at.x][at.y] = time_cnt;
 
     is_connect[at.x][at.y] = is_connect[df.x][df.y] = true;
 }
@@ -119,7 +124,7 @@ bool raser(){ // 공격 성공시 true 반환
             min_dist = cur.dep;
             flag = true;
 
-            cur.trace.pop();
+            if(!cur.trace.empty()) cur.trace.pop();
             trace = cur.trace;
 
             // cout << "min_dist: " << min_dist << endl;
@@ -140,6 +145,12 @@ bool raser(){ // 공격 성공시 true 반환
     // 경로 확보 시 공격
     while(!trace.empty()){
         grid[trace.top().x][trace.top().y] -= grid[at.x][at.y] / 2;
+
+        if(grid[trace.top().x][trace.top().y] <= 0){
+            grid[trace.top().x][trace.top().y] = 0;
+            tower_cnt--;
+        }
+
         is_connect[trace.top().x][trace.top().y] = true;
         trace.pop();
     }
@@ -155,11 +166,23 @@ void bomb(){
         if(at.x == nx && at.y == ny) continue; // 공격자는 영향 X
 
         grid[nx][ny] -= grid[at.x][at.y] / 2;
+
+        if(grid[nx][ny] < 0){
+            grid[nx][ny] = 0;
+            tower_cnt--;
+        }
+
+        is_connect[nx][ny] = true;
     }
 }
 
 void phase_2(){ // 2. 공격자의 공격
     grid[df.x][df.y] -= grid[at.x][at.y];
+
+    if(grid[df.x][df.y] < 0){
+        grid[df.x][df.y] = 0;
+        tower_cnt--;
+    }
 
     bool rst = raser();
 
@@ -167,18 +190,7 @@ void phase_2(){ // 2. 공격자의 공격
     if(!rst) bomb();
 }
 
-void phase_3(){ // 3. 포탑 파괴
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < m; ++j) {
-            if(grid[i][j] <= 0){
-                grid[i][j] = 0;
-                tower_cnt--;
-            }
-        }
-    }
-}
-
-void phase_4(){ // 4. 포탑 정비
+void phase_3(){ // 3. 포탑 정비
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < m; ++j) {
             // 무관했으며 부서지지 않은 포탑 공격력 1 증가
@@ -190,13 +202,18 @@ void phase_4(){ // 4. 포탑 정비
 void run(){
     // 부서지지 않은 포탑 1개 이상일 경우 k번 반복
     while(k-- && tower_cnt > 1){
+        time_cnt++;
+
         // 정비 대상 선택 위한 배열 초기화
         memset(is_connect, false, sizeof(is_connect));
 
         phase_1(); // 1. 공격자, 피해자 선정
         phase_2(); // 2. 공격자의 공격
-        phase_3(); // 3. 포탑 파괴
-        phase_4(); // 4. 포탑 정비
+        phase_3(); // 3. 포탑 정비
+
+        // traverse();
+
+        // cout << k << ' ' << tower_cnt << endl;
     }
 
     int rst = -1;
@@ -209,8 +226,10 @@ void run(){
 }
 
 int main() {
+    // freopen("input.txt", "r", stdin);
     init();
     input();
+
     // traverse();
     run();
 
