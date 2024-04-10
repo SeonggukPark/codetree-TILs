@@ -176,6 +176,7 @@ Rabbit L_Rabbit(Rabbit curRabbit, int dis) {
     return leftRabbit;
 }
 
+bool round_jump[MAX_P];
 
 void Race(){
     cin >> K >> S; // K번 진행 후 우선순위 높은 토끼 점수 +S
@@ -184,7 +185,7 @@ void Race(){
     priority_queue<Rabbit, vector<Rabbit>, cmp_race> pq_race;
 
     for(int i = 1; i <= P; ++i) {
-        rabbit[i].jump_cnt = 0;
+        round_jump[i] = false;
         pq_rabbit.push(rabbit[i]);
     }
 
@@ -193,6 +194,7 @@ void Race(){
         pq_rabbit.pop();
 
         rabbit[target.idx].jump_cnt++;
+        round_jump[target.idx] = true;
 
         pq_pos = {};
         int dist = target.dist;
@@ -228,7 +230,7 @@ void Race(){
 
     for(int i = 1; i <= P; ++i) {
         // K번 동안 한 번이라도 뽑힌 토끼만 pq에 추가
-        if(rabbit[i].jump_cnt != 0) pq_race.push(rabbit[i]);
+        if(round_jump[i] != 0) pq_race.push(rabbit[i]);
     }
 
     auto target = pq_race.top();
