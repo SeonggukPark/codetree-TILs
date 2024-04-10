@@ -186,7 +186,7 @@ void phase_2(){ // 2. 공격자의 공격
 
     // 레이저 공격 실패 시 폭탄 공격
     if(!rst) {
-        cout << "attck with bomb.. " << endl;
+        // cout << "attck with bomb.. " << endl;
         bomb();
     }
 
