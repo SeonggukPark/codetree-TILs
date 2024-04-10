@@ -72,17 +72,17 @@ void traverse(){
         }
         cout << endl;
     }
-    cout << "tower cnt: " << tower_cnt << endl;
+    cout << "tower cnt: " << tower_cnt << endl << endl;
 
 }
 
-void phase_1(){ // 1. 공격자, 피해자 선정
+void phase_1() { // 1. 공격자, 피해자 선정
     pq_a = {};
     pq_d = {};
 
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < m; ++j) {
-            if(grid[i][j] != 0) {
+            if (grid[i][j] != 0) {
                 pq_a.push({i, j, grid[i][j], grid_time[i][j]});
                 pq_d.push({i, j, grid[i][j], grid_time[i][j]});
             }
@@ -97,8 +97,6 @@ void phase_1(){ // 1. 공격자, 피해자 선정
     grid_time[at.x][at.y] = time_cnt;
 
     is_connect[at.x][at.y] = is_connect[df.x][df.y] = true;
-
-    // cout << "at, df: " << at.x << ' ' << at.y << ' ' << df.x << ' ' << df.y << endl;
 }
 
 struct info{
@@ -168,7 +166,7 @@ bool raser(){ // 공격 성공시 true 반환
 void bomb(){
     // 폭탄 공격
     for(int i = 0; i < 8; i++){
-        int nx = (df.x + bdx[i]) % n, ny = (df.y + bdy[i]) % m;
+        int nx = (df.x + dx[i] + n) % n, ny = (df.y + dy[i] + m) % m;
         if(nx < 0 || ny < 0 || grid[nx][ny] == 0) continue;
         if(at.x == nx && at.y == ny) continue; // 공격자는 영향 X
 
@@ -188,7 +186,7 @@ void phase_2(){ // 2. 공격자의 공격
 
     // 레이저 공격 실패 시 폭탄 공격
     if(!rst) {
-        // cout << "attck with bomb.. " << endl;
+        cout << "attck with bomb.. " << endl;
         bomb();
     }
 
@@ -223,8 +221,9 @@ void run(){
         if(tower_cnt <= 1) break;
 
         phase_3(); // 3. 포탑 정비
+        // cout << "st, df: " << at.x << ' ' << at.y << ' ' << df.x << ' ' << df.y << endl;
 
-        // traverse();
+        //traverse();
     }
 
     int rst = -1;
@@ -237,7 +236,7 @@ void run(){
 }
 
 int main() {
-    //freopen("input.txt", "r", stdin);
+    // freopen("input.txt", "r", stdin);
     init();
     input();
     // traverse();
