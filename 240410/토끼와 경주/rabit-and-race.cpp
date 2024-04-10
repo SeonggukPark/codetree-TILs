@@ -5,13 +5,15 @@
 #include <climits>
 #define fastio ios_base::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
 #define pii pair<int, int>
+#define ll long long
 using namespace std;
 // --------------------------
-int Q, N, M, P, K, S, L, um_idx, total_score;
+int Q, N, M, P, K, S, L, um_idx;
+ll total_score;
 constexpr size_t MAX_P = 2001; // 최대 토끼 2000 마리
 int dr[4] = {0, 0, 1, -1};
 int dc[4] = {1, -1, 0, 0};
-int minus_score[MAX_P];
+ll minus_score[MAX_P];
 
 // --------------------------
 unordered_map<int, int> um; // pid mapping 목적
@@ -193,15 +195,7 @@ void Race(){
         rabbit[target.idx].jump_cnt++;
 
         pq_pos = {};
-        int r = target.r, c = target.c, dist = target.dist;
-
-/*        for(int i = 0; i < 4; i++){
-            int nr = r + dr[i] * dist, nc = c + dc[i] * dist;
-            nr = (nr <= N) ? nr : N - (nr - N) % 2;
-            nc = (nc <= M) ? nc : M - (nc - M) % 2;
-
-            pq_pos.push({nr, nc});
-        }*/
+        int dist = target.dist;
 
         auto move = U_Rabbit(rabbit[target.idx], dist);
         // cout << move.r << ' ' << move.c << endl;
@@ -251,7 +245,7 @@ void Change_Dist(){
 }
 
 void Select_Winner(){
-    int score, rst = INT_MIN;
+    ll score, rst = LONG_LONG_MIN;
     for(int i = 1; i <= P; ++i) {
         score = total_score - minus_score[i];
         // cout << "rabbit: " << i << ' ' << score << endl;
