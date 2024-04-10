@@ -91,7 +91,7 @@ void phase_2(){
 
     // alive 순환하면서 현재 위치가 희망 편의점이랑 일치하면 해당 위치 lock
     for(auto p : alive){
-        // cout << p << ' ' << person[p].x << ' ' << person[p].y << endl;
+       //  cout << p << ' ' << person[p].x << ' ' << person[p].y << endl;
         if(person[p].x == conv[p].x && person[p].y == conv[p].y){
             grid[conv[p].x][conv[p].y] = -1;
             continue;
@@ -109,19 +109,40 @@ void phase_2(){
 
 void phase_3(){
     // bfs로 들어가는 사람 희망 편의점 기준 최단 거리 베이스캠프 찾아서 들어가기
-    queue<Pos> q;
+    queue<pair<Pos, int>> q;
     memset(visited, false, sizeof(visited));
     int conv_x = conv[cur_t].x, conv_y = conv[cur_t].y;
-    q.push({conv_x, conv_y});
+    q.push({{conv_x, conv_y}, 0});
 
     while(!q.empty()){
         auto target = q.front();
         q.pop();
 
-        int x = target.x, y = target.y;
+        int x = target.first.x, y = target.first.y;
 
         if(grid[x][y] == 1){ // 해당 지역이 베이스캠프 일 경우
+
+            while(!q.empty()){
+                auto comp = q.front();
+                q.pop();
+
+                // 같은 depth 애들 다 뽑아 보기
+                if(comp.second != target.second) break;
+
+                // row 비교
+                if(target.first.x > comp.first.x){
+                    x = comp.first.x, y = comp.first.y;
+                }
+
+                // col 비교
+                else if(target.first.y > comp.first.y){
+                    x = comp.first.x, y = comp.first.y;
+                }
+            }
+
+
             grid[x][y] = -1; // 해당 베이스 캠프는 이제 못 지남
+            
             person[cur_t].x = x, person[cur_t].y = y;
             break;
         }
@@ -132,7 +153,7 @@ void phase_3(){
             if(nx < 1 || ny < 1 || nx > N || ny > N || visited[nx][ny] || grid[nx][ny] == -1)  continue;
 
             visited[nx][ny] = true;
-            q.push({nx, ny});
+            q.push({{nx, ny}, target.second + 1});
         }
     }
 
