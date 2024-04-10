@@ -4,7 +4,7 @@
 #include <unordered_set>
 #define fastio ios_base::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
 using namespace std;
-constexpr size_t MAX_N = 15;
+constexpr size_t MAX_N = 16;
 constexpr size_t MAX_M = 31;
 int N, M, cur_t;
 int grid[MAX_N][MAX_N];
@@ -91,8 +91,7 @@ void phase_2(){
 
     // alive 순환하면서 현재 위치가 희망 편의점이랑 일치하면 해당 위치 lock
     for(auto p : alive){
-        // cout << person[p].x << ' ' << person[p].y << endl;
-
+        // cout << p << ' ' << person[p].x << ' ' << person[p].y << endl;
         if(person[p].x == conv[p].x && person[p].y == conv[p].y){
             grid[conv[p].x][conv[p].y] = -1;
             continue;
