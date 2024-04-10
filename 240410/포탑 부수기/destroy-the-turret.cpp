@@ -132,7 +132,7 @@ bool raser(){ // 공격 성공시 true 반환
         }
 
         for(int i = 0; i < 4; i++){
-            int nx = (cur.x + dx[i] + n) % n, ny = (cur.y + dy[i] + n) % m;
+            int nx = (cur.x + dx[i] + n) % n, ny = (cur.y + dy[i] + m) % m;
             // cout << "nx, ny: " << nx << ' ' << ny << endl;
             if(nx < 0 || ny < 0 || grid[nx][ny] == 0 || visited[nx][ny]) continue;
             // cout << "alive nx, ny: " << nx << ' ' << ny << endl;
@@ -237,6 +237,7 @@ void run(){
 }
 
 int main() {
+    //freopen("input.txt", "r", stdin);
     init();
     input();
     // traverse();
