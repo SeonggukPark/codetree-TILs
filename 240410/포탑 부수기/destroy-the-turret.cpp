@@ -68,11 +68,12 @@ void input(){
 void traverse(){
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < m; ++j) {
-            cout << setw(2) << grid[i][j] << ' ';
+            cout << setw(4) << grid[i][j] << ' ';
         }
         cout << endl;
     }
-    cout << endl;
+    cout << "tower cnt: " << tower_cnt << endl;
+
 }
 
 void phase_1(){ // 1. 공격자, 피해자 선정
@@ -96,6 +97,8 @@ void phase_1(){ // 1. 공격자, 피해자 선정
     grid_time[at.x][at.y] = time_cnt;
 
     is_connect[at.x][at.y] = is_connect[df.x][df.y] = true;
+
+    // cout << "at, df: " << at.x << ' ' << at.y << ' ' << df.x << ' ' << df.y << endl;
 }
 
 struct info{
@@ -103,7 +106,6 @@ struct info{
     stack<pos> trace;
 };
 
-int min_dist;
 bool visited[MAX_SIZE][MAX_SIZE];
 stack<pos> trace;
 
@@ -111,40 +113,45 @@ bool raser(){ // 공격 성공시 true 반환
     memset(visited, false, sizeof(visited));
     trace = {};
     bool flag = false;
-    min_dist = -1;
 
     queue<info> q;
     q.push({at.x, at.y, 0, trace});
+    visited[at.x][at.y] = true;
 
     while(!q.empty()){
         auto cur = q.front();
         q.pop();
 
         if(cur.x == df.x && cur.y == df.y){
-            min_dist = cur.dep;
+            // cout << "arrive: " << cur.x << ' ' << cur.y << endl;
             flag = true;
 
             if(!cur.trace.empty()) cur.trace.pop();
             trace = cur.trace;
-
-            // cout << "min_dist: " << min_dist << endl;
             break;
         }
 
         for(int i = 0; i < 4; i++){
-            int nx = (cur.x + dx[i]) % n, ny = (cur.y + dy[i]) % m;
-            if(nx < 0 || ny < 0 || grid[nx][ny] == 0) continue;
+            int nx = (cur.x + dx[i] + n) % n, ny = (cur.y + dy[i] + n) % m;
+            // cout << "nx, ny: " << nx << ' ' << ny << endl;
+            if(nx < 0 || ny < 0 || grid[nx][ny] == 0 || visited[nx][ny]) continue;
+            // cout << "alive nx, ny: " << nx << ' ' << ny << endl;
+
             cur.trace.push({nx, ny});
+            visited[nx][ny] = true;
             q.push({nx, ny, cur.dep + 1, cur.trace});
             cur.trace.pop();
         }
     }
 
+
     if(!flag) return false;
 
     // 경로 확보 시 공격
     while(!trace.empty()){
-        grid[trace.top().x][trace.top().y] -= grid[at.x][at.y] / 2;
+        // cout << trace.top().x << ' ' << trace.top().y << endl;
+
+        grid[trace.top().x][trace.top().y] -= (grid[at.x][at.y] / 2);
 
         if(grid[trace.top().x][trace.top().y] <= 0){
             grid[trace.top().x][trace.top().y] = 0;
@@ -165,9 +172,9 @@ void bomb(){
         if(nx < 0 || ny < 0 || grid[nx][ny] == 0) continue;
         if(at.x == nx && at.y == ny) continue; // 공격자는 영향 X
 
-        grid[nx][ny] -= grid[at.x][at.y] / 2;
+        grid[nx][ny] -= (grid[at.x][at.y] / 2);
 
-        if(grid[nx][ny] < 0){
+        if(grid[nx][ny] <= 0){
             grid[nx][ny] = 0;
             tower_cnt--;
         }
@@ -177,17 +184,20 @@ void bomb(){
 }
 
 void phase_2(){ // 2. 공격자의 공격
-    grid[df.x][df.y] -= grid[at.x][at.y];
-
-    if(grid[df.x][df.y] < 0){
-        grid[df.x][df.y] = 0;
-        tower_cnt--;
-    }
-
     bool rst = raser();
 
     // 레이저 공격 실패 시 폭탄 공격
-    if(!rst) bomb();
+    if(!rst) {
+        // cout << "attck with bomb.. " << endl;
+        bomb();
+    }
+
+    grid[df.x][df.y] -= grid[at.x][at.y];
+
+    if(grid[df.x][df.y] <= 0){
+        grid[df.x][df.y] = 0;
+        tower_cnt--;
+    }
 }
 
 void phase_3(){ // 3. 포탑 정비
@@ -201,7 +211,7 @@ void phase_3(){ // 3. 포탑 정비
 
 void run(){
     // 부서지지 않은 포탑 1개 이상일 경우 k번 반복
-    while(k-- && tower_cnt > 1){
+    while(k--){
         time_cnt++;
 
         // 정비 대상 선택 위한 배열 초기화
@@ -209,11 +219,12 @@ void run(){
 
         phase_1(); // 1. 공격자, 피해자 선정
         phase_2(); // 2. 공격자의 공격
+
+        if(tower_cnt <= 1) break;
+
         phase_3(); // 3. 포탑 정비
 
         // traverse();
-
-        // cout << k << ' ' << tower_cnt << endl;
     }
 
     int rst = -1;
@@ -226,10 +237,8 @@ void run(){
 }
 
 int main() {
-    // freopen("input.txt", "r", stdin);
     init();
     input();
-
     // traverse();
     run();
 
