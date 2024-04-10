@@ -135,7 +135,7 @@ void phase_3(){
                 }
 
                 // col 비교
-                else if(target.first.y > comp.first.y){
+                else if(target.first.x == comp.first.x && target.first.y > comp.first.y){
                     x = comp.first.x, y = comp.first.y;
                 }
             }
