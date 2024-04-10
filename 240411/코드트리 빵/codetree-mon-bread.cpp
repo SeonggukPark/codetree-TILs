@@ -49,7 +49,6 @@ void phase_1() {
     for (auto p: alive) {
         memset(visited, false, sizeof(visited));
         q = {};
-
         int per_x = person[p].x, per_y = person[p].y;
 
         for(int i = 0; i < 4; i++){
@@ -65,7 +64,6 @@ void phase_1() {
         while(!q.empty()){
             auto target = q.front();
             q.pop();
-
             int x = target.first.x, y = target.first.y;
 
             if(x == conv[p].x && y == conv[p].y){ // 해당 지역이 희망 편의점일 경우
@@ -75,7 +73,6 @@ void phase_1() {
 
             for(int i = 0; i < 4; i++){
                 int nx = x + dx[i], ny = y + dy[i];
-
                 if(nx < 1 || ny < 1 || nx > N || ny > N || visited[nx][ny] || grid[nx][ny] == -1)  continue;
 
                 visited[nx][ny] = true;
@@ -85,25 +82,20 @@ void phase_1() {
     }
 }
 
-
 void phase_2(){
     still_alive = {};
 
     // alive 순환하면서 현재 위치가 희망 편의점이랑 일치하면 해당 위치 lock
     for(auto p : alive){
-       //  cout << p << ' ' << person[p].x << ' ' << person[p].y << endl;
         if(person[p].x == conv[p].x && person[p].y == conv[p].y){
             grid[conv[p].x][conv[p].y] = -1;
             continue;
         }
-
         still_alive.insert(p);
     }
 
     // alive에서 해당 사람 제거
     alive = still_alive;
-
-    // cout << alive.size() << ' ' << still_alive.size() << endl;
 }
 
 
@@ -117,7 +109,6 @@ void phase_3(){
     while(!q.empty()){
         auto target = q.front();
         q.pop();
-
         int x = target.first.x, y = target.first.y;
 
         if(grid[x][y] == 1){ // 해당 지역이 베이스캠프 일 경우
@@ -135,21 +126,18 @@ void phase_3(){
                 }
 
                 // col 비교
-                else if(target.first.x == comp.first.x && target.first.y > comp.first.y){
+                if(target.first.x == comp.first.x && target.first.y > comp.first.y){
                     x = comp.first.x, y = comp.first.y;
                 }
             }
 
-
             grid[x][y] = -1; // 해당 베이스 캠프는 이제 못 지남
-            
             person[cur_t].x = x, person[cur_t].y = y;
             break;
         }
 
         for(int i = 0; i < 4; i++){
             int nx = x + dx[i], ny = y + dy[i];
-
             if(nx < 1 || ny < 1 || nx > N || ny > N || visited[nx][ny] || grid[nx][ny] == -1)  continue;
 
             visited[nx][ny] = true;
@@ -161,32 +149,18 @@ void phase_3(){
     alive.insert(cur_t);
 }
 
-void traverse(){
-    cout << "now: " << cur_t << endl;
-    for (int i = 1; i <= N; ++i) {
-        for (int j = 1; j <= N; ++j) {
-            cout << grid[i][j] << ' ';
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
-
 void run(){
     while(cur_t < M) { // M초 까지
         cur_t++;
         phase_1();
         phase_2();
         phase_3();
-        // traverse();
     }
 
     while(!alive.empty()){
         cur_t++;
         phase_1();
         phase_2();
-        // traverse();
-        // cout << alive.size() << endl;
     }
 
     cout << cur_t;
