@@ -142,6 +142,7 @@ void phase_3(){
 }
 
 void traverse(){
+    cout << "now: " << cur_t << endl;
     for (int i = 1; i <= N; ++i) {
         for (int j = 1; j <= N; ++j) {
             cout << grid[i][j] << ' ';
@@ -152,7 +153,7 @@ void traverse(){
 }
 
 void run(){
-    while(cur_t <= M) { // M초 까지
+    while(cur_t < M) { // M초 까지
         cur_t++;
         phase_1();
         phase_2();
@@ -174,6 +175,7 @@ void run(){
 
 int main() {
     fastio
+    // freopen("input.txt", "r", stdin);
     init();
     input();
     run();
