@@ -166,7 +166,7 @@ bool raser(){ // 공격 성공시 true 반환
 void bomb(){
     // 폭탄 공격
     for(int i = 0; i < 8; i++){
-        int nx = (df.x + dx[i] + n) % n, ny = (df.y + dy[i] + m) % m;
+        int nx = (df.x + bdx[i] + n) % n, ny = (df.y + bdy[i] + m) % m;
         if(nx < 0 || ny < 0 || grid[nx][ny] == 0) continue;
         if(at.x == nx && at.y == ny) continue; // 공격자는 영향 X
 
@@ -223,7 +223,7 @@ void run(){
         phase_3(); // 3. 포탑 정비
         // cout << "st, df: " << at.x << ' ' << at.y << ' ' << df.x << ' ' << df.y << endl;
 
-        //traverse();
+        // traverse();
     }
 
     int rst = -1;
