@@ -118,7 +118,6 @@ void Kill(){
             cout << endl;
         */
         }
-
     }
 
     // 살포 위치 선정
@@ -134,7 +133,7 @@ void Kill(){
         }
     }
 
-        rst += cnt;
+    rst += cnt;
 
     // 이전 살충제 효과 감소
     for (int i = 0; i < n; ++i) {
@@ -152,9 +151,13 @@ void Kill(){
         while (rpt < k) {
             if (nx < 0 || ny < 0 || nx >= n || ny >= n) break;
 
-            grid[nx][ny] = 0;
             killer[nx][ny] = c;
 
+            if (grid[nx][ny] <= 0){
+                break;
+            }
+
+            grid[nx][ny] = 0;
             nx += ddx[i], ny += ddy[i], rpt++;
         }
     }
@@ -175,7 +178,7 @@ void run(){
 }
 
 int main() {
-    // freopen("input.txt", "r", stdin);
+    //freopen("input.txt", "r", stdin);
     init();
     input();
     run();
