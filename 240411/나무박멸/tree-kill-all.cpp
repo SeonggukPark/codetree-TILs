@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cstring>
 #include <iomanip>
-
 using namespace std;
 constexpr size_t MAX_N = 20;
 int n, m, k, c, rst;
@@ -25,16 +24,6 @@ void input(){
             cin >> grid[i][j]; // 빈칸 0, 벽 -1, 나무 1 ~ 100
         }
     }
-}
-
-void traverse(){
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            cout << setw(3) << grid[i][j] << ' '; // 빈칸 0, 벽 -1, 나무 1 ~ 100
-        }
-        cout << endl;
-    }
-    cout << endl;
 }
 
 void Grow(){
@@ -101,22 +90,9 @@ void Kill(){
                 while(cnt < k) {
                     if (nx < 0 || ny < 0 || nx >= n || ny >= n || grid[nx][ny] <= 0) break;
                     add_grid[nx][ny] += grid[i][j];
-                    // cout << "i, j, nx, ny: " << i << ' ' << j << ' ' << nx << ' ' << ny << endl;
-
                     nx += ddx[l], ny += ddy[l], cnt++;
                 }
             }
-
-            // traverse total kill
-            /*
-            for (int x = 0; x < n; ++x) {
-                for (int l = 0; l < n; ++l) {
-                    cout << setw(3) << add_grid[x][l] << ' ';
-                }
-                cout << endl;
-            }
-            cout << endl;
-        */
         }
     }
 
@@ -167,11 +143,8 @@ void Kill(){
 void run(){
     while(m--){
         Grow();
-        // traverse();
         Extend();
-        // traverse();
         Kill();
-        // traverse();
     }
 
     cout << rst;
