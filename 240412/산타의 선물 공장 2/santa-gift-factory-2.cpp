@@ -64,12 +64,21 @@ void Move_All(){
     int src, dst;
     cin >> src >> dst;
 
+    if(belt[src].cnt == 0){
+        cout << belt[dst].cnt << endl;
+        return;
+    }
+
     node_pool[belt[dst].h].prev = belt[src].t;
     node_pool[belt[src].t].next = belt[dst].h;
 
     belt[dst].h = belt[src].h;
+    if(belt[dst].t == 0) belt[dst].t = belt[src].t;
+    
     belt[dst].cnt += belt[src].cnt;
     belt[src].t = belt[src].h = belt[src].cnt = 0;
+
+
 
     cout << belt[dst].cnt << endl;
 }
@@ -118,6 +127,9 @@ void Replace_Front(){
     belt[src].h = dst_h;
     belt[dst].h = src_h;
 
+    if(belt[src].cnt == 1) belt[src].t = dst_h;
+    if(belt[dst].cnt == 1) belt[dst].t = src_h;
+
     node_pool[src_h].next = dst_n;
     node_pool[dst_h].next = src_n;
     node_pool[src_n].prev = dst_h;
@@ -148,6 +160,7 @@ void Divide_Product(){
     belt[dst].h = src_h;
 
     // dst 빈 경우 처리
+    if(belt[dst].t == 0) belt[dst].t = src_t;
 
     node_pool[src_t].next = dst_h;
     node_pool[src_tn].prev = 0;
@@ -218,8 +231,8 @@ void run(){
                 break;
         }
 
-        //traverse_node();
-        //traverse_belt();
+        // traverse_node();
+        // traverse_belt();
     }
 }
 
