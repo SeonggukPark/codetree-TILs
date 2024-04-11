@@ -133,7 +133,10 @@ void Divide_Product(){
     int idx = belt[src].h;
     int num = belt[src].cnt / 2;
 
-    if(num == 0) return;
+    if(num == 0) {
+        cout << belt[dst].cnt << endl;
+        return;
+    }
 
     for(int i = 1; i < num; i++){
         idx = node_pool[idx].next;
@@ -221,6 +224,7 @@ void run(){
 }
 
 int main() {
+    // freopen("input.txt", "r", stdin);
     run();
     return 0;
 }
