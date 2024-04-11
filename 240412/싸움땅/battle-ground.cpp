@@ -16,34 +16,6 @@ struct Player{
 Player players[MAX_M];
 priority_queue<int> pq[MAX_N][MAX_N];
 
-void traverse_gun(){
-    cout << "traverse gun.. " << endl;
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            cout  << pq[i][j].top() << ' ';
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
-
-
-void traverse_player(){
-    cout << "traverse player.. " << endl;
-
-    for (int i = 1; i <= m; ++i) {
-        cout << "player " << i << ": " << players[i].x << ' ' << players[i].y << endl;
-    }
-
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            cout << grid[i][j] << ' ';
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
-
 void init(){
     memset(points, 0, sizeof(points));
     memset(grid, 0, sizeof(grid));
@@ -95,9 +67,7 @@ bool is_grid(int x, int y){
 
 void phase_1(){
     for(int i = 1; i <= m; ++i){
-        // traverse_player();
         auto & p = players[i];
-        // cout << "player " << i << " pos:  " << p.x << ' ' << p.y <<endl;
 
         grid[p.x][p.y] = 0;
         int nx = p.x + dx[p.d], ny = p.y + dy[p.d];
@@ -105,12 +75,8 @@ void phase_1(){
         // 격자 벗어 나면 방향 반대 1 이동
         if(!is_grid(nx, ny)){
             p.d = (p.d + 2) % 4;
-            // cout << "player " << i << " out.. new d: " << p.d << endl;
             nx = p.x + dx[p.d], ny = p.y + dy[p.d];
         }
-
-
-        // cout << "px, py: " << p.x << ' ' << p.y << endl;
 
         // case 1. 이동한 좌표에 player X
         if(grid[nx][ny] == 0){
@@ -143,8 +109,6 @@ void phase_1(){
                 else winner = idx_enemy, loser = i;
             }
 
-            // cout << "w, l : " << winner << ' ' << loser << endl;
-
             auto & w = players[winner];
             auto & l = players[loser];
 
@@ -155,7 +119,6 @@ void phase_1(){
             // 패자 총 내려 놓기
             pq[nx][ny].push(l.g);
             l.g = 0;
-
 
             // 진 플레이어 이동
             for (int j = 0; j < 4; ++j) {
@@ -169,18 +132,13 @@ void phase_1(){
                 grid[nnx][nny] = loser;
                 l.x = nnx, l.y = nny;
 
-                // cout << "lx, ly: " << l.x << ' ' <<l.y << endl;
-
                 // 패자 총이랑 비교 후 더 센총 고르기
                 replace_gun(nnx, nny);
                 break;
             }
 
             // 승자는 떨어진 총들 중 가장 공격력 높은 총 획득, 나머지는 내려 놓기
-            // cout << "px, py: " << p.x << ' ' << p.y << endl;
-
             w.x = nx, w.y = ny;
-
             replace_gun(w.x, w.y);
         }
     }
@@ -189,8 +147,6 @@ void phase_1(){
 void run(){
     while(k--){
         phase_1();
-        //traverse_gun();
-        //traverse_player();
     }
 
     for (int i = 1; i <= m; ++i) {
