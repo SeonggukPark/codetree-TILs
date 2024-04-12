@@ -101,6 +101,7 @@ void Interaction(int x, int y, int idx, int dir){ // dir 산타가 x, y를 향�
         // 이전의 방어자가 공격, 새로운 칸의 산타가 방어
         at = df, df = grid[x][y];
         grid[x][y] = at;
+        santas[at].x = x, santas[at].y = y;
 
         x += ddx[dir], y += ddy[dir];
 
@@ -280,7 +281,7 @@ void run(){
 
 
 int main() {
-    // freopen("input.txt", "r", stdin);
+    //freopen("input.txt", "r", stdin);
     init();
     input();
     //traverse();
