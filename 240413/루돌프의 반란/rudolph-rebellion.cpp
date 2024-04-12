@@ -153,7 +153,7 @@ void Rudolf_Move(){
     auto target = pq.top();
 
     // 가장 가까워지는 방향 탐색
-    int bx, by, bdir, new_dist, best_dist = 2501;
+    int bx, by, bdir, new_dist, best_dist = 250000;
     for(int i = 0; i < 8; i++){
         int nx = rudolf.x + ddx[i], ny = rudolf.y + ddy[i];
         new_dist = make_dist({nx, ny}, {target.x, target.y});
@@ -186,7 +186,7 @@ void Santa_Move(){
         }
 
         // 가장 가까워지는 방향 탐색
-        int bx = -1, by = -1, bdir, basic_dist, new_dist, best_dist = 2501;
+        int bx = -1, by = -1, bdir, basic_dist, new_dist, best_dist = 250000;
         basic_dist = make_dist({santa.x, santa.y}, {rudolf.x, rudolf.y});
         for(int j = 0; j < 4; j++){
             int nx = santa.x + dx[j], ny = santa.y + dy[j];
