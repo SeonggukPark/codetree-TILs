@@ -153,7 +153,7 @@ void Rudolf_Move(){
     auto target = pq.top();
 
     // 가장 가까워지는 방향 탐색
-    int bx, by, bdir, new_dist, best_dist = 250000;
+    int bx, by, bdir, new_dist, best_dist = 5001;
     for(int i = 0; i < 8; i++){
         int nx = rudolf.x + ddx[i], ny = rudolf.y + ddy[i];
         new_dist = make_dist({nx, ny}, {target.x, target.y});
@@ -186,7 +186,9 @@ void Santa_Move(){
         }
 
         // 가장 가까워지는 방향 탐색
-        int bx = -1, by = -1, bdir, basic_dist, new_dist, best_dist = 250000;
+        int bx = -1, by = -1, bdir, basic_dist, new_dist, best_dist = 5001;
+
+        // 기존보다 가까워 지는지 비교 위한 기존 거리
         basic_dist = make_dist({santa.x, santa.y}, {rudolf.x, rudolf.y});
         for(int j = 0; j < 4; j++){
             int nx = santa.x + dx[j], ny = santa.y + dy[j];
@@ -215,7 +217,7 @@ void Santa_Move(){
             grid[bx][by] = i;
         }
 
-            // 충돌 처리
+        // 충돌 처리
         else {
             Collapse(i, 31, bdir);
         }
@@ -242,6 +244,7 @@ void run() {
 }
 
 int main() {
+    // freopen("input.txt", "r", stdin);
     init();
     input();
     run();
