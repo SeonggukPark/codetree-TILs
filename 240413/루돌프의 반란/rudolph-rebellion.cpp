@@ -19,12 +19,20 @@ int score_santa[MAX_P];
 int stun_santa[MAX_P];
 
 int grid[MAX_N][MAX_N];
-int ddx[8] = {1, 1, 1, 0, 0, -1, -1, -1};
-int ddy[8] = {0, 1, -1, 1, -1, 0, 1, -1};
+int ddx[8] = {-1, 0, 1, 0, 1, 1, -1, -1};
+int ddy[8] = {0, 1, 0, -1, 1, -1, 1, -1};
 int dx[4] = {-1, 0, 1, 0}; // 상, 우, 하, 좌 순
 int dy[4] = {0, 1, 0, -1};
 
 void init(){
+    alive_santa = {};
+    dead_santa = {};
+    rudolf.x = rudolf.y = 0;
+
+    for(auto & santa : santas){
+        santa.x = santa.y = 0;
+    }
+
     memset(grid, 0, sizeof(grid));
     memset(score_santa, 0, sizeof(score_santa));
     memset(stun_santa, 0, sizeof(stun_santa));
@@ -94,7 +102,7 @@ void Interaction(int x, int y, int idx, int dir){ // dir 산타가 x, y를 향�
         at = df, df = grid[x][y];
         grid[x][y] = at;
 
-        x += dx[dir], y += dy[dir];
+        x += ddx[dir], y += ddy[dir];
 
         // df가 grid 밖으로 밀리면 사망하고 종료
         if(!is_grid(x, y)){
@@ -122,7 +130,7 @@ void Collapse(int at, int df, int dir){ // at, df: 1 ~ 30 :산타, 31: 루돌프
         new_dir = dir;
     }
 
-    // 2. 산타가 이동한 경우
+        // 2. 산타가 이동한 경우
     else{
         score_santa[at] += d;
         santa_x = santas[at].x - d * dx[dir], santa_y = santas[at].y - d * dy[dir];
@@ -190,8 +198,8 @@ void Rudolf_Move(){
 
     //cout << "after rudolf moves: " << endl;
     //traverse();
-   // traverse_state();
-   //cout << endl << endl;
+    //traverse_state();
+    //cout << endl << endl;
 }
 
 void Santa_Move(){
@@ -233,28 +241,27 @@ void Santa_Move(){
             grid[bx][by] = i;
         }
 
-        // 충돌 처리
+            // 충돌 처리
         else {
             Collapse(i, 31, bdir);
         }
 
         //cout << "after santa " << i << " moves: " << endl;
         //traverse();
-        // traverse_state();
+        //traverse_state();
     }
 }
 
 void Turn_Scoring(){
-   // cout << "after turn " << cur_turn << ": " ;
+    //cout << "after turn " << cur_turn << ": " ;
     for(auto a : alive_santa){
         score_santa[a]++;
     }
 /*
     for(int i = 1; i <= p; i++){
         cout << score_santa[i] << ' ';
-    }*/
-
-    //cout << endl;
+    }
+    cout << endl;*/
 }
 
 void run(){
@@ -273,7 +280,7 @@ void run(){
 
 
 int main() {
-    //freopen("input.txt", "r", stdin);
+    // freopen("input.txt", "r", stdin);
     init();
     input();
     //traverse();
