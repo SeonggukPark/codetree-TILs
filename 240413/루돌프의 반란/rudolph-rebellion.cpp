@@ -1,5 +1,4 @@
 #include <iostream>
-#include <iomanip>
 #include <cstring>
 #include <queue>
 #include <unordered_set>
@@ -14,7 +13,6 @@ struct Pos{
 Pos rudolf;
 Pos santas[MAX_P];
 unordered_set<int> alive_santa;
-unordered_set<int> dead_santa;
 int score_santa[MAX_P];
 int stun_santa[MAX_P];
 
@@ -26,7 +24,6 @@ int dy[4] = {0, 1, 0, -1};
 
 void init(){
     alive_santa = {};
-    dead_santa = {};
     rudolf.x = rudolf.y = 0;
 
     for(auto & santa : santas){
@@ -37,24 +34,6 @@ void init(){
     memset(score_santa, 0, sizeof(score_santa));
     memset(stun_santa, 0, sizeof(stun_santa));
     cur_turn = 0;
-}
-
-void traverse(){
-    for(int i = 1; i <= n; i++){
-        for (int j = 1; j <= n; ++j) {
-            cout << setw(2) << grid[i][j] << ' ';
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
-
-void traverse_state(){
-    cout << "rudolf: " << rudolf.x << ' ' << rudolf.y << endl;
-
-    for(auto k : alive_santa){
-        cout << "santa " << k << ": " << santas[k].x << ' ' <<santas[k].y << endl;
-    }
 }
 
 void input(){
@@ -144,7 +123,6 @@ void Collapse(int at, int df, int dir){ // at, df: 1 ~ 30 :산타, 31: 루돌프
     // grid 밖으로 밀려난 경우 사망
     if(!is_grid(santa_x, santa_y)) {
         alive_santa.erase(santa);
-        dead_santa.insert(santa);
         return;
     }
 
@@ -175,7 +153,7 @@ void Rudolf_Move(){
     auto target = pq.top();
 
     // 가장 가까워지는 방향 탐색
-    int bx, by, bdir, new_dist, best_dist = 250000;
+    int bx, by, bdir, new_dist, best_dist = 2501;
     for(int i = 0; i < 8; i++){
         int nx = rudolf.x + ddx[i], ny = rudolf.y + ddy[i];
         new_dist = make_dist({nx, ny}, {target.x, target.y});
@@ -196,11 +174,6 @@ void Rudolf_Move(){
     }
 
     grid[rudolf.x][rudolf.y] = 31;
-
-    //cout << "after rudolf moves: " << endl;
-    //traverse();
-    //traverse_state();
-    //cout << endl << endl;
 }
 
 void Santa_Move(){
@@ -213,7 +186,7 @@ void Santa_Move(){
         }
 
         // 가장 가까워지는 방향 탐색
-        int bx = -1, by = -1, bdir, basic_dist, new_dist, best_dist = 250000;
+        int bx = -1, by = -1, bdir, basic_dist, new_dist, best_dist = 2501;
         basic_dist = make_dist({santa.x, santa.y}, {rudolf.x, rudolf.y});
         for(int j = 0; j < 4; j++){
             int nx = santa.x + dx[j], ny = santa.y + dy[j];
@@ -246,46 +219,32 @@ void Santa_Move(){
         else {
             Collapse(i, 31, bdir);
         }
-
-        //cout << "after santa " << i << " moves: " << endl;
-        //traverse();
-        //traverse_state();
     }
 }
 
 void Turn_Scoring(){
-    //cout << "after turn " << cur_turn << ": " ;
     for(auto a : alive_santa){
         score_santa[a]++;
     }
-/*
-    for(int i = 1; i <= p; i++){
-        cout << score_santa[i] << ' ';
-    }
-    cout << endl;*/
 }
 
-void run(){
-    while(m-- && !alive_santa.empty()){
-        dead_santa = {};
+void run() {
+    while (m-- && !alive_santa.empty()) {
         cur_turn++;
         Rudolf_Move();
         Santa_Move();
         Turn_Scoring();
     }
 
-    for(int i = 1; i <= p; i++){
+    for (int i = 1; i <= p; i++) {
         cout << score_santa[i] << ' ';
     }
 }
 
-
 int main() {
-    //freopen("input.txt", "r", stdin);
+    freopen("input.txt", "r", stdin);
     init();
     input();
-    //traverse();
-
     run();
     return 0;
 }
