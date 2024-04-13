@@ -138,12 +138,16 @@ void Player_Move(){
 }
 
 void Rotate_Maze(){
-    unordered_set<int> targets{}, in_square{};
-    int dist, min_dist = 100;
+    // 생존자 없으면 pass
+    if(alive_players.empty()) return;
 
+    unordered_set<int> targets{};
+    int dist, min_dist = 100;
+    cout << "test: "  << endl;
     // 생존자 순회 하면서 탈출구 와의 거리 가장 작은 인원들 찾기
     for(auto player : alive_players) {
-        dist = max(abs(escape.x - players[player].x) + 1, abs(escape.y - players[player].y) + 1);
+        cout << "player: " << player << endl;
+        dist = max(abs(escape.x - players[player].x), abs(escape.y - players[player].y));
 
         if (min_dist < dist) continue;
         if (min_dist == dist) targets.insert(player);
@@ -153,6 +157,8 @@ void Rotate_Maze(){
             min_dist = dist;
         }
     }
+
+    cout << "min_dist: " << min_dist << endl;
 
     // 정사각형의 왼쪽 상단 좌표 (= 좌표 max 100개니까 그냥 순환)
     int lu_x, lu_y, rd_x, rd_y;
@@ -177,17 +183,12 @@ void Rotate_Maze(){
 
             if(flag) break;
         }
+
         if(flag) break;
     }
 
 
-
-    //cout << "left upper: " << lu_x << ' ' <<lu_y << ' ' << min_dist << endl;
-
-    // 정사각형 내부 인원 찾기
-    for (auto player : targets){
-        if(lu_x + min_dist > players[player].x && lu_y + min_dist > players[player].y) in_square.insert(player);
-    }
+    cout << "left upper: " << lu_x << ' ' <<lu_y << ' ' << min_dist << endl;
 
     reset_cpmap();
 
@@ -240,7 +241,7 @@ void run(){
     }
 
     // 이동 거리 합 구하기
-    for (int i = 0; i <= M; ++i) {
+    for (int i = 1; i <= M; ++i) {
         rst += dist_arr[i];
     }
 
@@ -249,6 +250,7 @@ void run(){
 }
 
 int main() {
+    // freopen("input.txt", "r", stdin);
     init();
     input();
     run();
