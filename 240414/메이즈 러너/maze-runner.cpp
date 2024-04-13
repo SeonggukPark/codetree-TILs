@@ -3,7 +3,6 @@
 #include <unordered_set>
 using namespace std;
 constexpr size_t MAX_N = 11, MAX_M = 11;
-
 int N, M, K, rst;
 int grid[MAX_N][MAX_N], cp_grid[MAX_N][MAX_N], to_grid[MAX_N][MAX_N];
 int dist_arr[MAX_M];
@@ -16,28 +15,6 @@ struct Pos{
 
 Pos escape, players[MAX_M];
 unordered_set<int> alive_players; // 생존자 관리
-
-void traverse_grid(){
-    for (int i = 1; i <= N; ++i) {
-        for (int j = 1; j <= N; ++j) {
-            cout << grid[i][j] << ' ';
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
-
-void traverse_player(){
-    cout << "Escape: ";
-    cout << escape.x << ' ' << escape.y << endl;
-
-    for (int i = 1; i <= M; ++i) {
-        cout << "Player " << i << ": ";
-        cout << players[i].x << ' '<< players[i].y << endl;
-    }
-
-    cout << endl;
-}
 
 void init(){
     rst = 0;
@@ -111,9 +88,7 @@ void Player_Move(){
         if(flag) dist_arr[player]++;
 
         p.x = bx, p.y = by;
-
-        //cout << "player " << player << " new pos: " << p.x << ' ' << p.y << endl;
-
+        
         if(p.x == escape.x && p.y == escape.y){
             continue;
         }
@@ -143,9 +118,7 @@ void Rotate_Maze(){
             min_dist = dist;
         }
     }
-
-    //cout << "min_dist : " << min_dist << endl;
-
+    
     // 정사각형의 왼쪽 상단 좌표 (= 좌표 max 100개니까 그냥 순환)
     int lu_x, lu_y, rd_x, rd_y;
     bool flag;
@@ -173,9 +146,7 @@ void Rotate_Maze(){
         if(flag) break;
     }
 
-
-    //cout << "left upper: " << lu_x << ' ' <<lu_y << ' ' << min_dist << endl;
-
+    
     // 정사각형 내부 인원 찾기
     for (auto player : targets){
         if(lu_x + min_dist > players[player].x && lu_y + min_dist > players[player].y) in_square.insert(player);
@@ -183,6 +154,7 @@ void Rotate_Maze(){
 
     reset_cpmap();
 
+    // grid만 회전
     // 좌표 1, 1으로 통일
     for(int i = 1; i <= min_dist; i++){
         for (int j = 1; j <= min_dist; ++j) {
@@ -196,7 +168,6 @@ void Rotate_Maze(){
             to_grid[i][j] = cp_grid[min_dist - j + 1][i];
         }
     }
-
 
     // grid 반영
     for(int i = 1; i <= min_dist; i++){
@@ -216,8 +187,6 @@ void Rotate_Maze(){
 
     // 참가자 회전
     for (auto player : targets) {
-
-
         if (players[player].x >= lu_x && players[player].x <= lu_x + min_dist - 1) {
             if (players[player].y >= lu_y && players[player].y <= lu_y + min_dist - 1) {
                 int i = players[player].x - lu_x, j = players[player].y - lu_y;
@@ -228,16 +197,10 @@ void Rotate_Maze(){
 }
 
 void run(){
-   // traverse_grid();
-    //traverse_player();
     int round = 1;
-
     while(K-- && !alive_players.empty()){ // K초가 지나지 않고 참가자가 남아 있을 동안 진행
-        //cout << "round: " << round << endl;
         Player_Move();
         Rotate_Maze();
-        //traverse_grid();
-        //traverse_player();
         round++;
     }
 
@@ -251,7 +214,7 @@ void run(){
 }
 
 int main() {
-   //  freopen("input.txt", "r", stdin);
+    // freopen("input.txt", "r", stdin);
     init();
     input();
     run();
