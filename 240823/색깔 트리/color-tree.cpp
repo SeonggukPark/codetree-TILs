@@ -5,7 +5,6 @@ constexpr size_t MAX_NODE = 100001;
 
 struct Node{
     int pid, color, max_dep, sub_time;
-    vector<int> kids;
     set<int> kids_color;
 };
 
@@ -15,6 +14,7 @@ vector<int> exist_id;
 
 void init(){
     cur_time = 0;
+    exist_id.clear();
 }
 
 void add_node(int mid, int pid, int color, int max_dep){
@@ -31,12 +31,9 @@ void add_node(int mid, int pid, int color, int max_dep){
     node_pool[mid].color = color;
     node_pool[mid].max_dep = max_dep;
     node_pool[mid].sub_time = cur_time;
-    node_pool[mid].kids.clear();
     node_pool[mid].kids_color.clear();
 
-    // cout << "mid: " << mid << " was added." << endl;
     exist_id.push_back(mid);
-    if(pid != -1) node_pool[pid].kids.push_back(mid);
 }
 
 void change_color(int mid, int color){
@@ -66,17 +63,19 @@ void check_score(){
 
     for(int i : exist_id){
         node_pool[i].kids_color.clear();
-        node_pool[i].kids_color.insert(node_pool[i].color);
     }
 
     for(int i : exist_id){
         int node_time = node_pool[i].sub_time, node_color = node_pool[i].color, par = node_pool[i].pid;
-
+        int changed_color, changed_time = node_time;
         bool upper_possible = true;
         while(par != -1){
             if(node_pool[par].sub_time > node_time) {
                 upper_possible = false;
-                break;
+                if(node_pool[par].sub_time > changed_time){
+                    changed_color = node_pool[par].color;
+                    changed_time = node_pool[par].sub_time;
+                }
             }
             par = node_pool[par].pid;
         }
@@ -87,6 +86,10 @@ void check_score(){
                 node_pool[par].kids_color.insert(node_color);
                 par = node_pool[par].pid;
             }
+        }
+
+        else{
+            node_pool[i].kids_color.insert(changed_color);
         }
     }
 
@@ -124,7 +127,7 @@ void solve(){
                 check_score();
                 break;
 
-            default:
+            default: // should not be accessed.
                 cout << "error occured.. " << endl;
                 break;
         }
