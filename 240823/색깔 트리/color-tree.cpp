@@ -1,11 +1,11 @@
 #include <bits/stdc++.h>
 #define endl '\n'
 using namespace std;
-constexpr size_t MAX_NODE = 100001;
+constexpr size_t MAX_NODE = 100001, MAX_COLOR = 5;
 
 struct Node{
     int pid, color, max_dep, sub_time;
-    set<int> kids_color;
+    bool kids_color[MAX_COLOR];
 };
 
 Node node_pool[MAX_NODE];
@@ -31,7 +31,7 @@ void add_node(int mid, int pid, int color, int max_dep){
     node_pool[mid].color = color;
     node_pool[mid].max_dep = max_dep;
     node_pool[mid].sub_time = cur_time;
-    node_pool[mid].kids_color.clear();
+    memset(node_pool[mid].kids_color, false, sizeof(node_pool[mid].kids_color));
 
     exist_id.push_back(mid);
 }
@@ -62,7 +62,7 @@ void check_score(){
     int acc = 0;
 
     for(int i : exist_id){
-        node_pool[i].kids_color.clear();
+        memset(node_pool[i].kids_color, false, sizeof(node_pool[i].kids_color));
     }
 
     for(int i : exist_id){
@@ -83,18 +83,22 @@ void check_score(){
         par = i;
         if(upper_possible){
             while(par != -1){
-                node_pool[par].kids_color.insert(node_color);
+                node_pool[par].kids_color[node_color - 1] = true;
                 par = node_pool[par].pid;
             }
         }
 
         else{
-            node_pool[i].kids_color.insert(changed_color);
+            node_pool[i].kids_color[changed_color - 1] = true;
         }
     }
 
     for(int i : exist_id){
-        acc += (int)node_pool[i].kids_color.size() * (int)node_pool[i].kids_color.size();
+        int tmp_cnt = 0;
+        for(bool k : node_pool[i].kids_color){
+            if(k) tmp_cnt++;
+        }
+        acc += tmp_cnt * tmp_cnt;
     }
 
     cout << acc << endl;
