@@ -103,7 +103,7 @@ void solve(){
             q.pop();
             if(max_r < cur.r) max_r = cur.r;
 
-            for (int j = 1; j < 4; ++j) {
+            for (int j = 0; j < 4; ++j) {
                 int nr = cur.r + dr[j], nc = cur.c + dc[j];
 
                 if(nr > r || nr < 1 || nc > c || nc < 1) continue;
