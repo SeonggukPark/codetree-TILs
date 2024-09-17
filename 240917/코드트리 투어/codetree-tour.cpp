@@ -2,10 +2,13 @@
 #include <cstring>
 #include <queue>
 #define endl '\n'
+#define pii pair<int, int>
+#define x first
+#define y second
 using namespace std;
 constexpr size_t MAX_LAND = 2000, MAX_ID = 30001;
 constexpr int INF = 987654321;
-int n, m, depart, graph[MAX_LAND][MAX_LAND];
+int n, m, depart, graph[MAX_LAND][MAX_LAND], dist[MAX_LAND];
 bool erased_id[MAX_ID];
 
 struct Product{
@@ -22,8 +25,31 @@ struct cmp{
 vector<Product> vec;
 priority_queue<Product, vector<Product>, cmp> pq;
 
-void init(){
+void dijkstra(){
+    priority_queue<pii, vector<pii>, greater<>> d_pq;
+    for (int i = 0; i < n; ++i) {
+        dist[i] = INF;
+    }
+
+    dist[depart] = 0;
+    d_pq.emplace(0, depart);
+
+    while(!d_pq.empty()){
+        auto top = d_pq.top();
+        d_pq.pop();
+
+        if(top.x != dist[top.y]) continue;
+
+        for (int i = 0; i < MAX_LAND; ++i) {
+            int next_d = top.x + graph[top.y][i];
+            if(next_d < dist[i]){
+                dist[i] = next_d;
+                d_pq.emplace(next_d, i);
+            }
+        }
+    }
 }
+
 
 void build_land(){ // cmd: 100
     memset(erased_id, true, sizeof(erased_id));
@@ -43,21 +69,15 @@ void build_land(){ // cmd: 100
         graph[v][u] = graph[u][v] = min(graph[v][u], w);
     }
 
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            for (int k = 0; k < n; ++k) {
-                graph[j][k] = min(graph[j][k], graph[j][i] + graph[i][k]);
-            }
-        }
-    }
+    dijkstra();
 }
 
 void make_product(int mid, int rev, int dest){ // cmd: 200
     erased_id[mid] = false;
     vec.push_back({mid, rev, dest, -1});
-    if(graph[depart][dest] == INF || graph[depart][dest] > rev) return;
+    if(dist[dest] == INF || dist[dest] > rev) return;
     // cout << mid << ' ' << rev << ' ' << dest << ' ' << graph[depart][dest] << endl;
-    pq.push({mid, rev, dest, graph[depart][dest]});
+    pq.push({mid, rev, dest, dist[dest]});
 }
 
 void cancle_product(int mid){ // cmd:300
@@ -79,12 +99,13 @@ void sell_product(){ // cmd: 400
 
 void change_depart(int next_depart){ // cmd: 500
     depart = next_depart;
+    dijkstra();
     pq = {};
 
     for(auto i : vec){
         if(erased_id[i.id]) continue;
-        if(graph[depart][i.dest] == INF || graph[depart][i.dest] > i.rev) continue;
-        pq.push({i.id, i.rev, i.dest, graph[depart][i.dest]});
+        if(dist[i.dest] == INF || dist[i.dest] > i.rev) continue;
+        pq.push({i.id, i.rev, i.dest, dist[i.dest]});
     }
 }
 
