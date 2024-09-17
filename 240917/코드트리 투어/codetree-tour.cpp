@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <queue>
-#define enld '\n'
+#define endl '\n'
 using namespace std;
 constexpr size_t MAX_LAND = 2000, MAX_ID = 30001;
 constexpr int INF = 987654321;
