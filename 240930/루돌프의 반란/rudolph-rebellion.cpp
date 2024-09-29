@@ -12,8 +12,7 @@ int grid[MAX_N + 1][MAX_N + 1], santa_score[MAX_SANTA], santa_stun[MAX_SANTA];
 int dx[8] = {-1, 0, 1, 0, 1, 1, -1, -1}; // 상 우 하 좌
 int dy[8] = {0, 1, 0, -1, 1, -1, 1, -1};
 pii ru_pos, santa[MAX_SANTA + 1];
-set<int> alive_santa;
-
+set<int> alive_santa, delete_santa;
 
 int make_dist(const pii & a, const pii & b){
     return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
@@ -32,7 +31,7 @@ void collapse(bool hit_by_rudolf_move, int dir, int santa_idx){
         santa[tar] = {santa[tar].x + C * dx[dir], santa[tar].y + C * dy[dir]};
 
         if(!is_valid(santa[tar].x, santa[tar].y)){ // 사망 판정
-            alive_santa.erase(tar);
+            delete_santa.insert(tar);
             return;
         }
         santa_stun[tar] = cur_turn + 1; // 기절
@@ -44,7 +43,7 @@ void collapse(bool hit_by_rudolf_move, int dir, int santa_idx){
         santa[tar] = {santa[tar].x + D * dx[dir], santa[tar].y + D * dy[dir]};
 
         if(!is_valid(santa[tar].x, santa[tar].y)){ // 사망 판정
-            alive_santa.erase(tar);
+            delete_santa.insert(tar);
             return;
         }
         santa_stun[tar] = cur_turn + 1; // 기절
@@ -58,7 +57,7 @@ void collapse(bool hit_by_rudolf_move, int dir, int santa_idx){
 
         santa[next] = {santa[next].x + dx[dir], santa[next].y + dy[dir]};
         if(!is_valid(santa[next].x, santa[next].y)) {
-            alive_santa.erase(next);
+            delete_santa.insert(next);
             return;
         }
     }
@@ -101,8 +100,10 @@ void rudolf_move(){
 }
 
 void santa_move() {
+    if(alive_santa.empty()) return;
+
     for (int idx: alive_santa) {
-        if(santa_stun[idx] >= cur_turn) continue;
+        if(delete_santa.find(idx) != delete_santa.end() || santa_stun[idx] >= cur_turn) continue;
 
         // 가까워 지는 방향 산타 이동
         pii min_dir = {-1, make_dist(ru_pos, santa[idx])};
@@ -126,9 +127,17 @@ void santa_move() {
 }
 
 void turn_score(){
+    for(int idx : delete_santa){
+        alive_santa.erase(idx);
+    }
+
+    if(alive_santa.empty()) return;
+
     for(int idx : alive_santa){
         santa_score[idx]++;
     }
+
+    delete_santa.clear();
 }
 
 void solve(){
