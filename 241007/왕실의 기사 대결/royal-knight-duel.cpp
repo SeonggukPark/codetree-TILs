@@ -12,8 +12,8 @@
 using namespace std;
 constexpr size_t MAX_L = 42, MAX_N = 31;
 int L, N, Q, grid[MAX_L][MAX_L], chess[MAX_L][MAX_L], bfs[MAX_L][MAX_L];
-int dx[4] = {-1, 0, 1, 0}; // U, R, D, L
-int dy[4] = {0, 1, 0, -1};
+int dx[4] = { -1, 0, 1, 0 }; // U, R, D, L
+int dy[4] = { 0, 1, 0, -1 };
 
 struct KNIGHT {
 	int idx, r, c, h, w, life, dam;
@@ -48,15 +48,6 @@ void input() {
 			}
 		}
 	}
-
-	/*
-	for (int i = 0; i <= L + 1; ++i) {
-		for (int j = 0; j <= L + 1; ++j) {
-			cout << chess[i][j] << ' ';
-		}
-		cout << endl;
-	}
-	*/
 }
 
 set<int> check_movabilty(int idx, int dir) {
@@ -98,20 +89,6 @@ set<int> check_movabilty(int idx, int dir) {
 			}
 		}
 	}
-	/*
-	for (int i = 1; i <= L; i++) {
-		for (int j = 1; j <= L; j++) {
-			cout << bfs[i][j] << ' ';
-		}
-		cout << endl;
-	}
-
-	for (int i : rst) {
-		cout << i << ' ';
-	}
-	cout << endl;
-	*/
-
 	return rst;
 }
 
@@ -145,7 +122,7 @@ void calc_damage(const set<int> & s) {
 	// 데미지 계산
 	for (auto i : s) {
 		KNIGHT tar = knights[i];
-		
+
 		// 데미지 계산
 		for (int top_u = tar.r; top_u < tar.r + tar.h; top_u++) {
 			for (int top_l = tar.c; top_l < tar.c + tar.w; top_l++) {
@@ -170,22 +147,12 @@ void solve() {
 	int idx, dir;
 	for (int i = 0; i < Q; i++) {
 		cin >> idx >> dir;
-		if(knights[idx].life <= 0) continue; // 이미 죽은 경우 명령 무시
+		if (knights[idx].life <= 0) continue; // 이미 죽은 경우 명령 무시
 		set<int> lst = check_movabilty(idx, dir);
 		if (lst.size() == 0) continue; // 이동 불가능 한 경우 명령 무시
 		move_knights(lst, dir); // 기사들 이동
 		lst.erase(idx); // 명령 받은 기사는 데미지 제외
 		calc_damage(lst); // 데미지 계산 + 죽은 기사 격자에서 제거
-
-		/*
-		for (int i = 1; i <= L; i++) {
-			for (int j = 1; j <= L; j++) {
-				cout << chess[i][j] << ' ';
-			}
-			cout << endl;
-		}
-		cout << endl;
-		*/
 	}
 
 	int rst = 0;
@@ -197,8 +164,8 @@ void solve() {
 }
 
 int main() {
-	ios_base::sync_with_stdio(false);
-	cin.tie(nullptr);
+	// ios_base::sync_with_stdio(false);
+	// cin.tie(nullptr);
 	input();
 	solve();
 	return 0;
