@@ -93,7 +93,7 @@ void rotate_map() {
     }
 
     if (u_l.y <= 0) {
-        r_d = { r_d.x, r_d.y + u_l.y + 1 };
+        r_d = { r_d.x, r_d.y - u_l.y + 1 };
         u_l.y = 1;
     }
 
