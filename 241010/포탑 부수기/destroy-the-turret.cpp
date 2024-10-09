@@ -107,7 +107,7 @@ void attack() {
             if (nc == 0) nc = M;
             if (nc == M + 1) nc = 1;
 
-            if (damage[nr][nc] == 0) continue; // 부서진 포탑인 경우
+            if (damage[nr][nc] <= 0) continue; // 부서진 포탑인 경우
             if (track[nr][nc] != make_pair(-1, -1)) continue; // 이미 방문한 경우
 
             track[nr][nc] = top;
@@ -115,7 +115,6 @@ void attack() {
         }
     }
 
-    // 2. 포탄 공격
     // 2. 포탄 공격
     damage[st.x][st.y] -= cur_dam;
 
@@ -126,7 +125,7 @@ void attack() {
         if (nc == 0) nc = M;
         if (nc == M + 1) nc = 1;
 
-        if (damage[nr][nc] <= 0) continue; // 이미 부서진 경우
+        if (make_pair(nr, nc) == wk || damage[nr][nc] <= 0) continue; // 공격자 or 이미 부서진 경우 데미지 X
 
         dam_time[nr][nc] = cur_time;
         damage[nr][nc] -= (cur_dam / 2);
