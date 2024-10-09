@@ -50,6 +50,8 @@ priority_queue<Node, vector<Node>, cmp_wk> pq_wk; // 공격자 선정 용
 priority_queue<Node, vector<Node>, cmp_st> pq_st; // 방어자 선정 용
 
 void select_targets() {
+    pq_wk = {}, pq_st = {};
+
     // grid 순환 하면서 pq 2개에 넣기
     for (int r = 1; r <= N; ++r) {
         for (int c = 1; c <= M; ++c) {
@@ -89,6 +91,7 @@ void attack() {
 
             pii prev = track[st.x][st.y];
             while (prev != wk) { // 경로 공격
+                // cout << "prev: " << prev.x << ' ' << prev.y << endl;
                 damage[prev.x][prev.y] -= (cur_dam / 2);
                 dam_time[prev.x][prev.y] = cur_time;
                 prev = track[prev.x][prev.y];
@@ -100,9 +103,9 @@ void attack() {
         for (int i = 0; i < 4; ++i) {
             int nr = top.x + dr[i], nc = top.y + dc[i];
             if (nr == 0) nr = N;
-            if (nr == N + 1) nr = 0;
-            if (nc == 0) nc = N;
-            if (nc == N + 1) nc = 0;
+            if (nr == N + 1) nr = 1;
+            if (nc == 0) nc = M;
+            if (nc == M + 1) nc = 1;
 
             if (damage[nr][nc] == 0) continue; // 부서진 포탑인 경우
             if (track[nr][nc] != make_pair(-1, -1)) continue; // 이미 방문한 경우
@@ -113,14 +116,15 @@ void attack() {
     }
 
     // 2. 포탄 공격
+    // 2. 포탄 공격
     damage[st.x][st.y] -= cur_dam;
 
-    for (int i = 0; i < 7; ++i) { // 주변 공격
+    for (int i = 0; i < 8; ++i) { // 주변 공격
         int nr = st.x + dr[i], nc = st.y + dc[i];
         if (nr == 0) nr = N;
-        if (nr == N + 1) nr = 0;
-        if (nc == 0) nc = N;
-        if (nc == N + 1) nc = 0;
+        if (nr == N + 1) nr = 1;
+        if (nc == 0) nc = M;
+        if (nc == M + 1) nc = 1;
 
         if (damage[nr][nc] <= 0) continue; // 이미 부서진 경우
 
@@ -164,14 +168,26 @@ void print_result() {
     cout << max_dam;
 }
 
+void traverse() {
+    for (int r = 1; r <= N; ++r) {
+        for (int c = 1; c <= M; ++c) {
+            cout << damage[r][c] << ' ';
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
 void solve() {
-    int cur_time = 0;
+    cur_time = 0;
+    
     while (K--) {
         cur_time++;
         select_targets(); // 공격자, 피해자 선정
         attack(); // 공격
         repair(); // 정비
         if (check_alive() <= 1) break; // 부서지지 않은 포탑 1개 이하면 즉시 종료
+        // traverse();
     }
     print_result(); // 살아 있는 포탑 중 가장 강한 포탑 공격력 출력
 }
