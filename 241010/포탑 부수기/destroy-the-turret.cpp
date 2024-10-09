@@ -62,13 +62,13 @@ void select_targets() {
     }
 
     // 1. 공격자 선정
-    wk = pq_wk.top().pos; pq_wk.pop();
+    wk = pq_wk.top().pos;
     damage[wk.x][wk.y] += (N + M); // 핸디캡 적용
     atk_time[wk.x][wk.y] = cur_time;
 
     // 2. 피해자 선정
-    while (!pq_st.empty() && pq_st.top().pos == wk) pq_st.pop(); // 공격자랑 동일 해지는 것 방지
-    st = pq_st.top().pos; pq_st.pop();
+    while (!pq_st.empty() && pq_st.top().pos == wk) pq_st.pop(); // 공격자랑 동일해지는 것 방지
+    st = pq_st.top().pos;
 }
 
 queue<pii> q;
@@ -76,7 +76,7 @@ void attack() {
     // 1. 레이저 공격 시도
     pii track[MAX_N][MAX_N]; // 경로 추적용
     for (int i = 1; i <= N; i++){
-        fill(track[i], track[i] + N + 1, make_pair(-1, -1));
+        fill(track[i], track[i] + M + 1, make_pair(-1, -1));
     }
 
     q = {};
