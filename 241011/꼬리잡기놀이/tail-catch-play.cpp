@@ -97,6 +97,9 @@ void group_move() {
             break;
         }
 
+        // cout << "prev, new head: " << cur_h.x << ' ' << cur_h.y << ' ' << new_head.x << ' ' << new_head.y << endl;
+        // cout << "prev, new tail: " << cur_t.x << ' ' << cur_t.y << ' ' << new_tail.x << ' ' << new_tail.y << endl;
+
         // 현재 꼬리 지우기
         group[cur_t.x][cur_t.y] = 0;
         cur_t = new_tail;
@@ -148,7 +151,7 @@ void throw_ball() {
             // cout << "hit_info: " << pos.x << ' ' << pos.y << ' ' << idx << endl;
 
             pii top;
-            pii & head = headers[idx];
+            pii & head = headers[idx], & tail = tails[idx];
 
             // bfs 돌려서 위치 찾기
             for (int i = 0; i < n; ++i) fill(visited[i], visited[i] + n, false);
@@ -162,7 +165,7 @@ void throw_ball() {
 
                 if (pos.x == top.x && pos.y == top.y) {
                     rst += seq_cnt * seq_cnt;
-                    swap(headers[idx], tails[idx]);
+                    swap(head, tail);
                     // cout << "head, tail: " << headers[idx].x << ' ' << headers[idx].y << ' ' << tails[idx].x << ' ' << tails[idx].y << endl;
                     return;
                 }
@@ -170,6 +173,8 @@ void throw_ball() {
                 for (int dir = 0; dir < 4; ++dir) {
                     int nx = top.x + dx[dir], ny = top.y + dy[dir];
                     if (!is_valid(nx, ny) || visited[nx][ny] || group[nx][ny] != idx) continue;
+                    if(make_pair(nx, ny) == tail && top == head) continue; // 꼬리랑 이어진 경우 대비
+                    
                     q.push({ nx, ny });
                     visited[nx][ny] = true;
                     break;
