@@ -46,17 +46,16 @@ void init() {
             cin >> grid[i][j];
             if (grid[i][j] == 0) group[i][j] = -1; // 벽인 경우
             if (grid[i][j] == 1) headers.push_back({ i, j });
-            if (grid[i][j] == 3) tails.push_back({ i, j });
         }
     }
 
     for (int i = 1; i < (int)headers.size(); ++i) {
         q = {};
         q.push({ headers[i].x, headers[i].y });
-        
+        pii top;
 
         while (!q.empty()) {
-            auto top = q.front(); q.pop();
+            top = q.front(); q.pop();
             group[top.x][top.y] = i;
 
             for (int dir = 0; dir < 4; ++dir) {
@@ -69,6 +68,8 @@ void init() {
                 }
             }
         }
+
+        tails.push_back(top);
     }
 
     //  traverse_group();
